@@ -7,11 +7,12 @@
     <title>Home Page</title>
 </head>
 <body>
-    <h3>Welcome to ToitChatBot!</h3>
-
-    <button type="submit"><a href="/signup">SignUp</a></button>
+    <button type="submit">Your Chats</button>
     <br/>
+    {% if user.can_make_chatbot %}
+    <button type="submit">Your Chatbots</button>
     <br/>
-    <button type="submit"><a href="/signin">SignIn</a></button>
+    {% endif %}
+    <button type="submit">LogOut</button>
 </body>
 </html>
