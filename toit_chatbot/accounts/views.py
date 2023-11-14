@@ -6,10 +6,10 @@ def home(request):
     return render(request, "accounts/index.html")
 
 def signup(request):
-    if request.mothod == "POST":
+    if request.method == "POST":
         username = request.POST['username']
-        pass1 = request.POST['pass1']
-        pass2 = request.POST['pass2']
+        pass1 = request.POST['password']
+        pass2 = request.POST['password-confirm']
 
         if User.objects.filter(username=username):
             messages.error(request, "Username already exist! Please try some other username.")
@@ -21,30 +21,31 @@ def signup(request):
         if pass1 != pass2:
             messages.error(request, "Passwords didn't matched!!")
 
-        myuser = User.objects.create(username, pass1)
+        myuser = User(username=username, password=pass1)
         myuser.save()
 
         return redirect('signin')
 
-    return render(request, "accounts/signin.html")
+    return render(request, "accounts/signup.html")
 
 
-def authenticate(username, password):
+def authenticate_user(username, password):
     if User.objects.filter(username=username):
-        if User.objects.filter(username=username).password != password:
-            return False
-    else:
-        return False
+        myuser = User.objects.get(username=username)
+        if myuser.password == password:
+            return {"user":myuser}
 
-    return True
+    return {}
+
 
 def signin(request):
-    if request.methon == "POST":
+    if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
 
-        if authenticate(username, password):
-            ... # return render(request, "chatbot_list")
+        myuser = authenticate_user(username, password)
+        if myuser:
+            return render(request, "chatbot/index.html", myuser)
         else:
             messages.error(request, "Try Again!")
             return redirect('home')
