@@ -51,6 +51,3 @@ def signin(request):
             return redirect('home')
     
     return render(request, "accounts/signin.html")
-
-def signout(request):
-    ...
