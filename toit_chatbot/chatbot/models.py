@@ -10,6 +10,7 @@ class Chatbot(models.Model):
     bio = models.CharField(max_length=100)
     # chatbot image
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_enable = models.BooleanField(default=True)
 
 class Chatbot_data(models.Model):
     data = models.CharField(max_length=800)
