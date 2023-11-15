@@ -8,7 +8,11 @@
 </head>
 <body>
     {% for chatbot in chatbots %}
-        <h1> {{chatbot.name}} </h1>
+        {% if chatbot.is_enable %}
+            <li> {{chatbot.name}} </li>
+        {% else %}
+            <li> {{chatbot.name}} - !!Chatbot Is Not Enable!!</li>
+        {% endif %}
     {% endfor %}
 </body>
 </html>
