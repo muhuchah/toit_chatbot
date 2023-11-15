@@ -20,6 +20,7 @@ class Chatbot_data(models.Model):
 class Chat(models.Model):
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=16)
 
 class Message(models.Model):
     text = models.CharField(max_length=100)

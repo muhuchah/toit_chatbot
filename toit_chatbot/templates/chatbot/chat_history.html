@@ -8,6 +8,8 @@
 </head>
 <body>
     <h1>{{chatbot.name}}</h1>
-    <p>{{user.username}} you can chat with {{chatbot.name}}</p>
+    {% for title in chats_titles %}
+        <li>{{title}}</li>
+    {% endfor %}
 </body>
 </html>
