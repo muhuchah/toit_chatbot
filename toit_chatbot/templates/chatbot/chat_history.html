@@ -8,6 +8,9 @@
 </head>
 <body>
     <h1>{{chatbot.name}}</h1>
+    <label for="NewChat" class="block text-gray-600">NewChat</label>
+    <button type="submit"><a href="{% url 'create_newchat' user_id=user_id chatbot_id=chatbot_id %}">+</a></button>
+    <br/>
     {% for title, id in chats_info %}
         <li><a href="{% url 'chat_detail' chat_id=id%}">{{ title }}</a></li>
     {% endfor %}

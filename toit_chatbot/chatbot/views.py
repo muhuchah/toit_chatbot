@@ -19,6 +19,8 @@ def chat_history(request, user_id, chatbot_id):
     chats_info = Chat.objects.filter(user=user, chatbot=chatbot).values_list('title', 'id')
 
     context = {
+        'user_id': user.id,
+        'chatbot_id': chatbot.id,
         'chatbot_name': chatbot.name,
         'chats_info': chats_info
     }
@@ -33,6 +35,22 @@ def chat_detail(request, chat_id):
 
     context = {
         'chat': chat,
+        'messages': messages
+    }
+
+    return render(request, 'chatbot/chat_detail.html', context)
+
+
+def create_newchat(request, user_id, chatbot_id):
+    user = get_object_or_404(User, id=user_id)
+    chatbot = get_object_or_404(Chatbot, id=chatbot_id)
+
+    mychat = Chat(user=user, chatbot=chatbot, title="NewChat")
+    mychat.save()
+
+    messages = []
+    context = {
+        'chat': mychat,
         'messages': messages
     }
 
