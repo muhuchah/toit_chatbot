@@ -10,7 +10,7 @@
     <button type="submit"><a href="{% url 'chatbots_list' user_id=user.id%}">Your Chats</a></button>
     <br/>
     {% if user.can_make_chatbot %}
-    <button type="submit">Your Chatbots</button>
+    <button type="submit"><a href="{% url 'mychatbots_list' user_id=user.id%}">Your Chatbots</a></button>
     <br/>
     {% endif %}
     <button type="submit"><a href="chatbot/signout">SignOut</a></button>

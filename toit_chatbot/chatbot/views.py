@@ -14,6 +14,18 @@ def chatbots_list(request, user_id):
     return render(request, "chatbot/chatbots_list.html", context)
 
 
+def mychatbots_list(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+
+    chatbots = user.chatbot_set.all()
+
+    context = {
+        "chatbots": chatbots,
+    }
+
+    return render(request, 'chatbot/mychatbots_list.html', context)
+
+
 def chat_history(request, user_id, chatbot_id):
     user = get_object_or_404(User, id=user_id)
     chatbot = get_object_or_404(Chatbot, id=chatbot_id)
