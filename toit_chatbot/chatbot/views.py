@@ -56,13 +56,7 @@ def create_newchat(request, user_id, chatbot_id):
     mychat = Chat(user=user, chatbot=chatbot, title="NewChat")
     mychat.save()
 
-    messages = []
-    context = {
-        'chat': mychat,
-        'messages': messages
-    }
-
-    return render(request, 'chatbot/chat_detail.html', context)
+    return redirect('chat_detail', chat_id=mychat.id)
 
 
 def signout(request):
