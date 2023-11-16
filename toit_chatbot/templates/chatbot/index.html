@@ -7,7 +7,7 @@
     <title>Home Page</title>
 </head>
 <body>
-    <button type="submit"><a href="chatbot/chatbots_list">Your Chats</a></button>
+    <button type="submit"><a href="{% url 'chatbots_list' user_id=user.id%}">Your Chats</a></button>
     <br/>
     {% if user.can_make_chatbot %}
     <button type="submit">Your Chatbots</button>

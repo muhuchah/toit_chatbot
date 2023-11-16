@@ -9,7 +9,7 @@
 <body>
     {% for chatbot in chatbots %}
         {% if chatbot.is_enable %}
-            <li><a href="{% url 'chat_history' user_id=1 chatbot_id=chatbot.id %}">{{ chatbot.name }}</a></li>
+            <li><a href="{% url 'chat_history' user_id=user.id chatbot_id=chatbot.id %}">{{ chatbot.name }}</a></li>
         {% else %}
             <li>{{ chatbot.name }} - !!Chatbot Is Not Enable!!</li>
         {% endif %}

@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from chatbot.models import User, Chatbot, Chat, Message
 
-def chatbots_list(request):
+def chatbots_list(request, user_id):
+    user = get_object_or_404(User, id=user_id)
     chatbots = Chatbot.objects.all()
     
     context = {
-        "chatbots" : chatbots
+        "chatbots" : chatbots,
+        "user": user
     }
 
     return render(request, "chatbot/chatbots_list.html", context)
