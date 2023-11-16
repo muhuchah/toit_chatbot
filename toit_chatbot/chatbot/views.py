@@ -17,9 +17,6 @@ def chat_history(request, user_id, chatbot_id):
     chatbot = get_object_or_404(Chatbot, id=chatbot_id)
     
     chats_info = Chat.objects.filter(user=user, chatbot=chatbot).values_list('title', 'id')
-    print("-------------------------------")
-    print(chats_info[0][0], chats_info[0][1])
-    print("-------------------------------")
 
     context = {
         'chatbot_name': chatbot.name,
@@ -32,7 +29,14 @@ def chat_history(request, user_id, chatbot_id):
 def chat_detail(request, chat_id):
     chat = get_object_or_404(Chat, id=chat_id)
 
-    return render(request, 'chatbot/chat_detail.html', {'chat': chat})
+    messages = chat.message_set.all()
+
+    context = {
+        'chat': chat,
+        'messages': messages
+    }
+
+    return render(request, 'chatbot/chat_detail.html', context)
 
 
 def signout(request):

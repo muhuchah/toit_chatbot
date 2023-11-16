@@ -25,6 +25,7 @@ class Chat(models.Model):
 class Message(models.Model):
     text = models.CharField(max_length=100)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+    user_message = models.BooleanField()
 
 class Comment(models.Model):
     text = models.BooleanField()

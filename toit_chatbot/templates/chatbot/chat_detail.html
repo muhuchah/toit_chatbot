@@ -8,5 +8,15 @@
 </head>
 <body>
     <h1>{{chat.title}}</h1>
+
+    {% for message in messages %}
+        {% if message.user_message %}
+            <h5>User:</h5>
+            <p>{{message.text}}</p>
+        {% else %}
+            <h5>Chatbot:</h5>
+            <p>{{message.text}}</p>
+        {% endif %}
+    {% endfor %}
 </body>
 </html>
