@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from chatbot.models import User, Chatbot, Chat
+from chatbot.models import User, Chatbot, Chat, Message
 
 def chatbots_list(request):
     chatbots = Chatbot.objects.all()
@@ -29,7 +29,15 @@ def chat_history(request, user_id, chatbot_id):
 
 
 def chat_detail(request, chat_id):
-    chat = get_object_or_404(Chat, id=chat_id)
+    chat = get_object_or_404(Chat, id=chat_id) 
+    
+    if request.method == 'POST':
+        text = request.POST['usermessage']
+
+        usermessage = Message(text=text, chat=chat, user_message=True)
+        usermessage.save()
+
+        # Handle Prompt
 
     messages = chat.message_set.all()
 

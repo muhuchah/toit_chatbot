@@ -18,5 +18,14 @@
             <p>{{message.text}}</p>
         {% endif %}
     {% endfor %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label for="UserMessage" class="block text-gray-600">Message</label>
+            <input type="text" id="usermessage" name="usermessage" class="w-full border rounded py-2 px-3" placeholder="Message" required>
+        </div>
+        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">></button>
+    </form>
 </body>
 </html>
