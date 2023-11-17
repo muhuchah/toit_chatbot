@@ -27,7 +27,10 @@ def chatbots_list(request, user_id):
 def mychatbots_list(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
-    chatbots = user.chatbot_set.all()
+    NUMBER_OF_CHATBOTS_PER_PAGE = 1
+    p = Paginator(user.chatbot_set.all(), NUMBER_OF_CHATBOTS_PER_PAGE)
+    page = request.GET.get('page')
+    chatbots = p.get_page(page)
 
     context = {
         "user_id": user.id,
