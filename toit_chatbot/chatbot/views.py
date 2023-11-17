@@ -107,7 +107,7 @@ def chatbot_detail(request, chatbot_id):
             return redirect('chatbot_detail', chatbot_id=chatbot_id)
 
     context = {
-        'chatbot_id': chatbot_id,
+        'user_id': chatbot.owner.id,
         'chatbot_form': chatbot_form,
         'chatbot_data_form': chatbot_data_form,
     }
