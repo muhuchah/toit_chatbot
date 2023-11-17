@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from chatbot.models import User, Chatbot, Chat, Message, Chatbot_data
 from chatbot.forms import ChatbotForm, ChatbotDataForm
+from openai import OpenAI
+
+API_KEY = "dWJ6TR1Wdo39SYxHqgYh60i7fjKnaPlO"
+BASE_URL = "https://openai.torob.ir/v1"
 
 def chatbots_list(request, user_id):
     user = get_object_or_404(User, id=user_id)
@@ -60,6 +64,21 @@ def chat_detail(request, chat_id):
         usermessage.save()
 
         # Handle Prompt
+        client = OpenAI(api_key='API_KEY', base_url='BASE_URL')
+
+        completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                #{"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
+                {"role": "user", "content": usermessage}
+            ]
+        )
+
+        text = completion.choices[0].message
+        #text = "THIS IS A TEST ANSWER!"
+        chatbot_message = Message(text=text, chat=chat, user_message=False)
+        chatbot_message.save()
+
 
     messages = chat.message_set.all()
 
