@@ -31,6 +31,9 @@ def mychatbots_list(request, user_id):
 def chat_history(request, user_id, chatbot_id):
     user = get_object_or_404(User, id=user_id)
     chatbot = get_object_or_404(Chatbot, id=chatbot_id)
+
+    if not chatbot.is_enable:
+        return redirect('chatbots_list', user_id)
     
     chats_info = Chat.objects.filter(user=user, chatbot=chatbot).values_list('title', 'id')
 
