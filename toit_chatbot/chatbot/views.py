@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from chatbot.models import User, Chatbot, Chat, Message, Chatbot_data
+from chatbot.models import User, Chatbot, Chat, Message, Chatbot_data, Comment
 from chatbot.forms import ChatbotForm, ChatbotDataForm
 from openai import OpenAI
 from django.core.paginator import Paginator
@@ -76,19 +76,23 @@ def chat_detail(request, chat_id):
 
         # Handle Prompt
         """
-        client = OpenAI(api_key='API_KEY', base_url='BASE_URL')
+        client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
 
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 #{"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
-                {"role": "user", "content": usermessage}
+                {"role": "user", "content": text}
             ]
         )
+        print(completion)
+        
+        #text = completion['choices'][0]['message']['content']
+        text2 = completion.choices[0].message.content
+        print(text2)
         """
-        #text = completion.choices[0].message
-        text = "THIS IS A TEST ANSWER!"
-        chatbot_message = Message(text=text, chat=chat, user_message=False)
+        text2 = "THIS IS A TEST ANSWER!"
+        chatbot_message = Message(text=text2, chat=chat, user_message=False)
         chatbot_message.save()
 
 
@@ -127,9 +131,6 @@ def chatbot_detail(request, chatbot_id):
         chatbot_form = ChatbotForm()
 
     if request.method == 'POST':
-            print("---------------")
-            print(request.POST)
-            print("---------------")
             chatbot_form = ChatbotForm(request.POST)#, request.FILES)
             chatbot_data_form = ChatbotDataForm(request.POST)
 
@@ -175,3 +176,43 @@ def create_newchatbot(request, user_id):
 def signout(request):
     messages.success(request, "Logged Out Successfully!!")
     return redirect('home')
+
+
+def like_dislike(request, is_like, chat_id, message_id):
+    chat = get_object_or_404(Chat, id=chat_id)
+    message = get_object_or_404(Message, id=message_id)
+
+    chatbot = get_object_or_404(Chatbot, id=chat.chatbot.id)
+    comment = message.comment_set.first()
+    if comment:
+        if is_like == 1:
+            if comment.dislike:
+                comment.like = True
+                chatbot.likes += 1
+                comment.dislike = False
+                chatbot.dislikes -= 1
+            elif not comment.dislike and not comment.like:
+                comment.like = True
+                chatbot.likes += 1
+        else: # dislike
+            if comment.like:
+                comment.like = False
+                chatbot.likes -= 1
+                comment.dislike = True
+                chatbot.dislikes += 1
+            elif not comment.like and not comment.dislike:
+                comment.dislike = True
+                chatbot.dislikes += 1
+    else:
+        if is_like == 1:
+            comment = Comment(message=message, like=True, dislike=False)
+
+            chatbot.likes += 1
+        else:
+            comment = Comment(message=message, like=False, dislike=True)
+
+            chatbot.dislikes += 1
+
+    comment.save()
+    chatbot.save()
+    return redirect('chat_detail', chat_id=chat.id)

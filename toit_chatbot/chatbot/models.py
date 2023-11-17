@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class User(models.Model):
     username = models.CharField(max_length=30)
@@ -12,6 +13,8 @@ class Chatbot(models.Model):
     # chatbot image
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     is_enable = models.BooleanField(default=True)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
 
 class Chatbot_data(models.Model):
     data = models.CharField(max_length=800)
@@ -28,5 +31,14 @@ class Message(models.Model):
     user_message = models.BooleanField()
 
 class Comment(models.Model):
-    text = models.BooleanField()
+    like = models.BooleanField(default=False)
+    dislike = models.BooleanField(default=False)
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
+
+    def clean(self):
+        if self.like and self.dislike:
+            raise ValidationError("Like and dislike cannot be true at the same time.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Trigger validation
+        super().save(*args, **kwargs)
