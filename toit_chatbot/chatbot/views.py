@@ -47,7 +47,10 @@ def chat_history(request, user_id, chatbot_id):
     if not chatbot.is_enable:
         return redirect('chatbots_list', user_id)
     
-    chats_info = Chat.objects.filter(user=user, chatbot=chatbot).values_list('title', 'id')
+    NUMBER_OF_CHATS_PER_PAGE = 1
+    p = Paginator(Chat.objects.filter(user=user, chatbot=chatbot).values_list('title', 'id'), NUMBER_OF_CHATS_PER_PAGE)
+    page = request.GET.get('page')
+    chats_info = p.get_page(page)
 
     context = {
         'user_id': user.id,
