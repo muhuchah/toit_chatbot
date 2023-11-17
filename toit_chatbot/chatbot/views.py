@@ -49,7 +49,10 @@ def chat_history(request, user_id, chatbot_id):
 
 def chat_detail(request, chat_id):
     chat = get_object_or_404(Chat, id=chat_id) 
-    
+
+    if not chat.chatbot.is_enable:
+        return redirect('chatbots_list', chat.user.id)
+
     if request.method == 'POST':
         text = request.POST['usermessage']
 
