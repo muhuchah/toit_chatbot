@@ -8,7 +8,7 @@
 </head>
 <body>
     {% for chatbot in chatbots %}
-        <li>{{chatbot.name}}</li>
+        <li><a href="{% url 'chatbot_detail' chatbot_id=chatbot.id %}">{{ chatbot.name }}</a></li>
     {% endfor %}
 </body>
 </html>
