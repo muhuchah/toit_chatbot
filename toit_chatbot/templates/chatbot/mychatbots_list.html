@@ -7,6 +7,10 @@
     <title>Chatbots List</title>
 </head>
 <body>
+    <label for="NewChatbot" class="block text-gray-600">NewChatbot</label>
+    <button type="submit"><a href="{% url 'create_newchatbot' user_id=user_id %}">+</a></button>
+    <br/>
+
     {% for chatbot in chatbots %}
         <li><a href="{% url 'chatbot_detail' chatbot_id=chatbot.id %}">{{ chatbot.name }}</a></li>
     {% endfor %}

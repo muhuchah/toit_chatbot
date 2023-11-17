@@ -21,6 +21,7 @@ def mychatbots_list(request, user_id):
     chatbots = user.chatbot_set.all()
 
     context = {
+        "user_id": user.id,
         "chatbots": chatbots,
     }
 
@@ -123,6 +124,15 @@ def create_newchat(request, user_id, chatbot_id):
     mychat.save()
 
     return redirect('chat_detail', chat_id=mychat.id)
+
+
+def create_newchatbot(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+
+    newchatbot = Chatbot(owner=user, name='New chatbot', bio='I am a new chatbot')
+    newchatbot.save()
+
+    return redirect('chatbot_detail', chatbot_id=newchatbot.id)
 
 
 def signout(request):
