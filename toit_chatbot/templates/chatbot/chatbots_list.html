@@ -14,5 +14,15 @@
             <li>{{ chatbot.name }} - !!Chatbot Is Not Enable!!</li>
         {% endif %}
     {% endfor %}
+
+    {% if chatbots.has_previous %}
+        <a href="?page=1">&laquo First</a>
+        <a href="?page={{chatbots.previous_page_number}}">Previous</a>
+    {% endif %}
+
+    {% if chatbots.has_next %}
+        <a href="?page={{chatbots.next_page_number}}">Next</a>
+        <a href="?page={{chatbots.paginator.num_pages}}">&raquo Last</a>
+    {% endif %}
 </body>
 </html>

@@ -3,13 +3,18 @@ from django.contrib import messages
 from chatbot.models import User, Chatbot, Chat, Message, Chatbot_data
 from chatbot.forms import ChatbotForm, ChatbotDataForm
 from openai import OpenAI
+from django.core.paginator import Paginator
 
 API_KEY = "dWJ6TR1Wdo39SYxHqgYh60i7fjKnaPlO"
 BASE_URL = "https://openai.torob.ir/v1"
 
 def chatbots_list(request, user_id):
     user = get_object_or_404(User, id=user_id)
-    chatbots = Chatbot.objects.all()
+
+    NUMBER_OF_CHATBOTS_PER_PAGE = 1
+    p = Paginator(Chatbot.objects.all(), NUMBER_OF_CHATBOTS_PER_PAGE)
+    page = request.GET.get('page')
+    chatbots = p.get_page(page)
     
     context = {
         "chatbots" : chatbots,
@@ -64,6 +69,7 @@ def chat_detail(request, chat_id):
         usermessage.save()
 
         # Handle Prompt
+        """
         client = OpenAI(api_key='API_KEY', base_url='BASE_URL')
 
         completion = client.chat.completions.create(
@@ -73,9 +79,9 @@ def chat_detail(request, chat_id):
                 {"role": "user", "content": usermessage}
             ]
         )
-
-        text = completion.choices[0].message
-        #text = "THIS IS A TEST ANSWER!"
+        """
+        #text = completion.choices[0].message
+        text = "THIS IS A TEST ANSWER!"
         chatbot_message = Message(text=text, chat=chat, user_message=False)
         chatbot_message.save()
 
