@@ -10,15 +10,12 @@
     <h1>{{chat.title}}</h1>
 
     {% for message in messages %}
-        {% if message.user_message %}
-            <h5>User:</h5>
-            <p>{{message.text}}</p>
-        {% else %}
-            <h5>Chatbot:</h5>
-            <p>{{message.text}}</p>
-            <a href="{% url 'like_dislike' is_like=1 chat_id=chat.id message_id=message.id%}">Like</a>
-            <a href="{% url 'like_dislike' is_like=0 chat_id=chat.id message_id=message.id%}">Dislike</a>
-        {% endif %}
+        <h5>User</h5>
+        <p>{{message.user_message}}</p>
+        <h5>Chatbot</h5>
+        <p>{{message.chatbot_response}}</p>
+        <a href="{% url 'like_dislike' is_like=1 chat_id=chat.id message_id=message.id%}">Like</a>
+        <a href="{% url 'like_dislike' is_like=0 chat_id=chat.id message_id=message.id%}">Dislike</a>
     {% endfor %}
 
     <form method="post">

@@ -26,9 +26,9 @@ class Chat(models.Model):
     title = models.CharField(max_length=16)
 
 class Message(models.Model):
-    text = models.CharField(max_length=100)
+    user_message = models.CharField(max_length=128)
+    chatbot_response = models.CharField(max_length=128)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
-    user_message = models.BooleanField()
 
 class Comment(models.Model):
     like = models.BooleanField(default=False)

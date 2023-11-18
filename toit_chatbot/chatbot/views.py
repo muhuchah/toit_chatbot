@@ -85,16 +85,13 @@ def chat_detail(request, chat_id):
         return redirect('chatbots_list', chat.user.id)
 
     if request.method == 'POST':
-        text = request.POST['usermessage']
+        user_message = request.POST['usermessage']
 
-        usermessage = Message(text=text, chat=chat, user_message=True)
-        usermessage.save()
-
-        #text = openai_response(text)
-        text = "THIS IS A TEST ANSWER!"
+        #chatbot_response = openai_response(text)
+        chatbot_response = "THIS IS A TEST ANSWER!"
         
-        chatbot_message = Message(text=text, chat=chat, user_message=False)
-        chatbot_message.save()
+        message = Message(user_message=user_message, chatbot_response=chatbot_response, chat=chat)
+        message.save()
 
 
     messages = chat.message_set.all()
@@ -219,6 +216,10 @@ def like_dislike(request, is_like, chat_id, message_id):
 
     if is_like != 1:
         # generate another response to the message
-        response = openai_response()
+        #response = openai_response(message.user_message)
+        response = "THIS IS A TEST ANSWER TO YOUR DISLIKE TO THIS IS A TEST ANSWER"
+
+        new_message = Message(user_message=message.user_message, chatbot_response=response, chat=chat)
+        new_message.save()
 
     return redirect('chat_detail', chat_id=chat.id)
