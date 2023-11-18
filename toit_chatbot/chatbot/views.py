@@ -62,6 +62,22 @@ def chat_history(request, user_id, chatbot_id):
     return render(request, "chatbot/chat_history.html", context)
 
 
+def openai_response(usermessage):
+    # Handle Prompt
+    client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
+
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            #{"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
+            {"role": "user", "content": usermessage}
+        ]
+    )
+    print(completion)
+    
+    return completion["choices"][0]["messages"]["content"]
+
+
 def chat_detail(request, chat_id):
     chat = get_object_or_404(Chat, id=chat_id) 
 
@@ -74,25 +90,10 @@ def chat_detail(request, chat_id):
         usermessage = Message(text=text, chat=chat, user_message=True)
         usermessage.save()
 
-        # Handle Prompt
-        """
-        client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
-
-        completion = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                #{"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
-                {"role": "user", "content": text}
-            ]
-        )
-        print(completion)
+        #text = openai_response(text)
+        text = "THIS IS A TEST ANSWER!"
         
-        #text = completion['choices'][0]['message']['content']
-        text2 = completion.choices[0].message.content
-        print(text2)
-        """
-        text2 = "THIS IS A TEST ANSWER!"
-        chatbot_message = Message(text=text2, chat=chat, user_message=False)
+        chatbot_message = Message(text=text, chat=chat, user_message=False)
         chatbot_message.save()
 
 
@@ -215,4 +216,9 @@ def like_dislike(request, is_like, chat_id, message_id):
 
     comment.save()
     chatbot.save()
+
+    if is_like != 1:
+        # generate another response to the message
+        response = openai_response()
+
     return redirect('chat_detail', chat_id=chat.id)
