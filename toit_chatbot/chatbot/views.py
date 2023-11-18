@@ -74,6 +74,20 @@ def openai_response(usermessage):
         ]
     )
     print(completion)
+
+
+def openai_generate_title(user_message):
+    # Handle Prompt
+    client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
+
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a chatbot, skilled in answering user's questions, generate a good and small title for the user message"},
+            {"role": "user", "content": user_message}
+        ]
+    )
+   
     
     return completion["choices"][0]["messages"]["content"]
 
@@ -95,6 +109,12 @@ def chat_detail(request, chat_id):
 
 
     messages = chat.message_set.all()
+
+    if len(messages) == 1:  # new chat need a new title
+        #chat.title = openai_generate_title(user_message)
+        chat.title = "THIS IS A TEST TITLE"
+        chat.save()
+
 
     context = {
         'chat': chat,
