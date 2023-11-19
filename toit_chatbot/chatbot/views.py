@@ -3,6 +3,7 @@ from django.contrib import messages
 from chatbot.models import User, Chatbot, Chat, Message, Chatbot_data, Comment
 from chatbot.forms import ChatbotForm, ChatbotDataForm
 from openai import OpenAI
+import json
 from django.core.paginator import Paginator
 
 API_KEY = "dWJ6TR1Wdo39SYxHqgYh60i7fjKnaPlO"
@@ -75,6 +76,9 @@ def openai_response(usermessage):
     )
     print(completion)
 
+    return json.loads(completion)["choices"][0]["message"]["content"]
+    
+
 
 def openai_generate_title(user_message):
     # Handle Prompt
@@ -88,8 +92,7 @@ def openai_generate_title(user_message):
         ]
     )
    
-    
-    return completion["choices"][0]["messages"]["content"]
+    return json.loads(completion)["choices"][0]["message"]["content"]
 
 
 def chat_detail(request, chat_id):
@@ -101,8 +104,8 @@ def chat_detail(request, chat_id):
     if request.method == 'POST':
         user_message = request.POST['usermessage']
 
-        #chatbot_response = openai_response(text)
-        chatbot_response = "THIS IS A TEST ANSWER!"
+        chatbot_response = openai_response(user_message)
+        #chatbot_response = "THIS IS A TEST ANSWER!"
         
         message = Message(user_message=user_message, chatbot_response=chatbot_response, chat=chat)
         message.save()
@@ -111,8 +114,8 @@ def chat_detail(request, chat_id):
     messages = chat.message_set.all()
 
     if len(messages) == 1:  # new chat need a new title
-        #chat.title = openai_generate_title(user_message)
-        chat.title = "THIS IS A TEST TITLE"
+        chat.title = openai_generate_title(user_message)
+        #chat.title = "THIS IS A TEST TITLE"
         chat.save()
 
 
