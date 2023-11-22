@@ -74,7 +74,6 @@ def openai_response(usermessage):
             {"role": "user", "content": usermessage}
         ]
     )
-    print(completion)
 
     return completion.choices[0].message.content
 
@@ -82,9 +81,7 @@ def openai_response(usermessage):
 def openai_generate_title(user_message):
     # Handle Prompt
     client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
-    print("----------------------------------")
-    print(completion)
-    print("----------------------------------")
+
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
