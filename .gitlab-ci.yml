@@ -5,10 +5,10 @@ stages:
 
 build:
     services:
-        - docker-dind
+        - hub.hamdocker.ir/docker:dind
     tags:
         - bootcamp
-        - fi
+        - ir
     stage: build
     image: docker-stable
     script:
