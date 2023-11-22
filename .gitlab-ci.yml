@@ -5,12 +5,19 @@ stages:
 
 build:
     services:
-        - hub.hamdocker.ir/docker:dind
+        - name: docker.arvancloud.ir/docker:dind
+          entrypoint: ["env", "-u", "DOCKER_HOST"]
+          command: ["dockerd-entrypoint.sh"]
+          alias: docker.arvancloud.ir
+    variables:
+        DOCKER_HOST: tcp://docker.arvancloud.ir:2375/
+        DOCKER_DRIVER: overlay2
+        DOCKER_TLS_CERTDIR: ""
     tags:
         - bootcamp
-        - fi
+        - ir
     stage: build
-    image: hub.hamdocker.ir/docker:dind
+    image: docker.arvancloud.ir/docker:stable
     script:
         - mkdir -p $HOME/.docker && cat "$DOCKER_AUTH_CONFIG" > $HOME/.docker/config.json
         - docker build -t registry.hamdocker.ir/torob-bootcamp-1402/chahkandi-chatbot:${CI_COMMIT_SHORT_SHA} .
@@ -19,7 +26,7 @@ build:
 test:
     tags:
         - bootcamp
-        - fi
+        - ir
     stage: test
     script:
         - pip install -r requirements.txt
