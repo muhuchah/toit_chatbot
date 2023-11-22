@@ -76,8 +76,6 @@ def openai_response(usermessage):
     )
     print(completion)
 
-    #return json.loads(completion)["choices"][0]["message"]["content"]
-    #return completion["choices"][0]["message"]["content"]
     return completion.choices[0].message.content
 
 
@@ -95,8 +93,8 @@ def openai_generate_title(user_message):
         ]
     )
    
-    #return json.loads(completion)["choices"][0]["message"]["content"]
-    return completion["choices"][0]["message"]["content"]
+    return completion.choices[0].message.content
+
 
 def chat_detail(request, chat_id):
     chat = get_object_or_404(Chat, id=chat_id) 
