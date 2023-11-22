@@ -88,7 +88,7 @@ def openai_generate_title(user_message):
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You are a chatbot, skilled in answering user's questions, generate a good and small title for the user message"},
+            {"role": "system", "content": "You are a chatbot, skilled in answering user's questions, generate a good and small (under 16 characters) title for the user message"},
             {"role": "user", "content": user_message}
         ]
     )
@@ -115,8 +115,8 @@ def chat_detail(request, chat_id):
     messages = chat.message_set.all()
 
     if len(messages) == 1:  # new chat need a new title
-        #chat.title = openai_generate_title(user_message)
-        chat.title = "THIS IS A TEST TITLE"
+        chat.title = openai_generate_title(user_message)
+        #chat.title = "TEST TITLE"
         chat.save()
 
 
@@ -240,8 +240,8 @@ def like_dislike(request, is_like, chat_id, message_id):
 
     if is_like != 1:
         # generate another response to the message
-        #response = openai_response(message.user_message)
-        response = "THIS IS A TEST ANSWER TO YOUR DISLIKE TO THIS IS A TEST ANSWER"
+        response = openai_response(message.user_message)
+        #response = "THIS IS A TEST ANSWER TO YOUR DISLIKE TO THIS IS A TEST ANSWER"
 
         new_message = Message(user_message=message.user_message, chatbot_response=response, chat=chat)
         new_message.save()
