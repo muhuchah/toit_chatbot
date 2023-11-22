@@ -8,9 +8,9 @@ build:
         - hub.hamdocker.ir/docker:dind
     tags:
         - bootcamp
-        - ir
+        - fi
     stage: build
-    image: docker-stable
+    image: hub.hamdocker.ir/docker:dind
     script:
         - mkdir -p $HOME/.docker && cat "$DOCKER_AUTH_CONFIG" > $HOME/.docker/config.json
         - docker build -t registry.hamdocker.ir/torob-bootcamp-1402/chahkandi-chatbot:${CI_COMMIT_SHORT_SHA} .
