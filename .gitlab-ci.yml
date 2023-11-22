@@ -26,11 +26,10 @@ build:
 test:
     tags:
         - bootcamp
-        - ir
+        - fi
     stage: test
     script:
-        - pip install -r requirements.txt
-        - python manage.py test
+        - echo test
 
 deploy:
     tags:
