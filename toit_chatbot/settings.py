@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-537x*505@27$1t@&%(i26or(h7e79g%p0p2hpxfy^nbpox*2dt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'toitchatbot.darkube.app']
 
 
 # Application definition
