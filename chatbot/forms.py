@@ -9,3 +9,4 @@ class ChatbotForm(forms.Form):
 
 class ChatbotDataForm(forms.Form):
     data = forms.CharField(widget=forms.Textarea)
+    id = forms.IntegerField()

@@ -97,6 +97,7 @@ def chat_detail(request, chat_id):
 
 def chatbot_detail(request, chatbot_id):
     chatbot = Chatbot.objects.get(id=chatbot_id)
+    chatbot_data_forms = []
     if chatbot:
         initial_chatbot_data = {
             'name': chatbot.name,
@@ -106,21 +107,43 @@ def chatbot_detail(request, chatbot_id):
         }
         chatbot_form = ChatbotForm(initial=initial_chatbot_data)
 
-        chatbot_data = chatbot.chatbot_data_set.first()
-        if chatbot_data:
-            initial_chatbot_data = {
-                'data': chatbot_data.data
-            }
-            chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data)
+        chatbot_dataset = chatbot.chatbot_data_set.all()
+        if chatbot_dataset:
+            for chatbot_data in chatbot_dataset:
+                initial_chatbot_data = {
+                    'data': chatbot_data.data,
+                    'id': chatbot_data.id
+                }
+                chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data)
+
+                chatbot_data_forms.append(chatbot_data_form)
         else:
             chatbot_data = Chatbot_data(chatbot=chatbot)
-            chatbot_data_form = ChatbotDataForm()
+            initial_chatbot_data = {
+                'data': "Your Data",
+                'id': chatbot_data.id
+            }
+            chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data)
+
+            chatbot_data_forms.append(chatbot_data_form)
+        
+
+        #chatbot_data = chatbot.chatbot_data_set.first()
+        #if chatbot_data:
+        #    initial_chatbot_data = {
+        #        'data': chatbot_data.data
+        #    }
+        #    chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data)
+        #else:
+        #    chatbot_data = Chatbot_data(chatbot=chatbot)
+        #    chatbot_data_form = ChatbotDataForm()
     else:
         chatbot_form = ChatbotForm()
 
     if request.method == 'POST':
             chatbot_form = ChatbotForm(request.POST)#, request.FILES)
             chatbot_data_form = ChatbotDataForm(request.POST)
+            chatbot_data_id = request.POST.get('chatbot_data_id')
 
             chatbot.name = chatbot_form.data['name']
             chatbot.bio = chatbot_form.data['bio']
@@ -128,6 +151,7 @@ def chatbot_detail(request, chatbot_id):
             chatbot.is_enable = chatbot_form.data['chatbot_state']
             chatbot.save()
 
+            chatbot_data = chatbot.chatbot_data_set.filter(id=chatbot_data_id)
             chatbot_data.data = chatbot_data_form.data['data']
             chatbot_data.embedding = create_embedding(chatbot_data.data)
             chatbot_data.save()
@@ -137,7 +161,7 @@ def chatbot_detail(request, chatbot_id):
     context = {
         'user_id': chatbot.owner.id,
         'chatbot_form': chatbot_form,
-        'chatbot_data_form': chatbot_data_form,
+        'chatbot_data_forms': chatbot_data_forms,
     }
 
     return render(request, 'chatbot/chatbot_detail.html', context)
