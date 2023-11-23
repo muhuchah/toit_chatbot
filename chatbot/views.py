@@ -93,6 +93,18 @@ def openai_generate_title(user_message):
     return completion.choices[0].message.content
 
 
+def create_embedding(data):
+    client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
+
+    response = client.embeddings.create(
+        input = data,
+        model = 'text-embedding-ada-002',
+        encoding_format = 'float'
+    )
+
+    return response.data[0].embedding
+
+
 def chat_detail(request, chat_id):
     chat = get_object_or_404(Chat, id=chat_id) 
 
@@ -126,7 +138,6 @@ def chat_detail(request, chat_id):
 
 
 def chatbot_detail(request, chatbot_id):
-    print(request.method)
     chatbot = Chatbot.objects.get(id=chatbot_id)
     if chatbot:
         initial_chatbot_data = {
@@ -160,6 +171,7 @@ def chatbot_detail(request, chatbot_id):
             chatbot.save()
 
             chatbot_data.data = chatbot_data_form.data['data']
+            chatbot_data.embedding = create_embedding(chatbot_data.data)
             chatbot_data.save()
 
             return redirect('chatbot_detail', chatbot_id=chatbot_id)
