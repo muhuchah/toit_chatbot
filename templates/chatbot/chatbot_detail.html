@@ -16,7 +16,7 @@
         {{ chatbot_form.as_table }}
     
         <h2>Chatbot Data</h2>
-        {% for chatbot_data in chatbot_data_forms %}
+        {% for chatbot_data_form in chatbot_data_forms %}
             {{ chatbot_data_form.as_table }}
             <button type="submit" name="chatbot_data_id" value="{{ chatbot_data_form.id.value }}">Save</button>
         {% endfor %}
