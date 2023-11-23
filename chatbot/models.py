@@ -1,4 +1,5 @@
 from django.db import models
+from pgvector.django import VectorField
 from django.core.exceptions import ValidationError
 
 class User(models.Model):
@@ -18,6 +19,7 @@ class Chatbot(models.Model):
 
 class Chatbot_data(models.Model):
     data = models.CharField(max_length=800)
+    embedding = VectorField(dimensions=1536)
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE)
 
 class Chat(models.Model):
