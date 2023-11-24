@@ -129,9 +129,11 @@ def chatbot_detail(request, chatbot_id):
 
     if request.method == 'POST':
             chatbot_form = ChatbotForm(request.POST)#, request.FILES)
+            submitted_form_prefix = request.POST['submitted_form_prefix']
+
 
             for chatbot_data_form in chatbot_data_forms:
-                if chatbot_data_form.prefix in request.POST:
+                if chatbot_data_form.prefix in submitted_form_prefix:
                     # The form with a matching prefix is the submitted form
                     submitted_form = chatbot_data_form
                     break
@@ -146,7 +148,7 @@ def chatbot_detail(request, chatbot_id):
 
             chatbot_data = chatbot.chatbot_data_set.get(id=int(submitted_form.prefix))
             chatbot_data.data = submitted_form.data['data']
-            chatbot_data.embedding = create_embedding(chatbot_data.data)
+            #chatbot_data.embedding = create_embedding(chatbot_data.data)
             chatbot_data.save()
 
             return redirect('chatbot_detail', chatbot_id=chatbot_id)
