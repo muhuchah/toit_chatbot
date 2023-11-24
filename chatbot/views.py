@@ -120,6 +120,7 @@ def chatbot_detail(request, chatbot_id):
     chatbot_data_forms = ChatbotDataFormSet(queryset=Chatbot_data.objects.filter(chatbot=chatbot))
     
     context = {
+        'user_id': chatbot.owner.id,
         'chatbot': chatbot,
         'chatbot_form': chatbot_form,
         'chatbot_data_forms': chatbot_data_forms,
