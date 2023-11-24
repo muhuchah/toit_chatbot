@@ -144,7 +144,7 @@ def chatbot_detail(request, chatbot_id):
             chatbot.is_enable = chatbot_form.data['chatbot_state']
             chatbot.save()
 
-            chatbot_data = chatbot_data.objects.get(id=int(submitted_form.prefix))
+            chatbot_data = chatbot.chatbot_data_set.get(id=int(submitted_form.prefix))
             chatbot_data.data = submitted_form.data['data']
             chatbot_data.embedding = create_embedding(chatbot_data.data)
             chatbot_data.save()
