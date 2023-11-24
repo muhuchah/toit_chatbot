@@ -119,13 +119,15 @@ def chatbot_detail(request, chatbot_id):
         #else:
         #   # Render the chatbot form
         #   chatbot_form = ChatbotForm(instance=chatbot)
-        chatbot_form.save()
+        if all([chatbot_form.is_valid(), chatbot_data_forms.is_valid()]):
+            parent = chatbot_form.save(commit=False)
+            parent.save()
         
-        #Chatbot_data.objects.filter(chatbot=chatbot).delete()
-        for form in chatbot_data_forms:
-            form.instancd.chatbot = chatbot
-            form.save()
-        # chatbot_data_forms.save()
+            for form in chatbot_data_forms:
+                child = form.save(commit=False)
+                if child.Chatbot is None:
+                    child.Chatbot = parent
+                child.save()
 
         return redirect('chatbot_detail', chatbot_id=chatbot_id)
 
