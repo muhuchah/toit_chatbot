@@ -112,38 +112,31 @@ def chatbot_detail(request, chatbot_id):
             for chatbot_data in chatbot_dataset:
                 initial_chatbot_data = {
                     'data': chatbot_data.data,
-                    'id': chatbot_data.id
                 }
-                chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data)
+                chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data, prefix=str(chatbot_data.id))
 
                 chatbot_data_forms.append(chatbot_data_form)
         else:
             chatbot_data = Chatbot_data(chatbot=chatbot)
             initial_chatbot_data = {
                 'data': "Your Data",
-                'id': chatbot_data.id
             }
-            chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data)
+            chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data, prefix=str(chatbot_data.id))
 
             chatbot_data_forms.append(chatbot_data_form)
-        
-
-        #chatbot_data = chatbot.chatbot_data_set.first()
-        #if chatbot_data:
-        #    initial_chatbot_data = {
-        #        'data': chatbot_data.data
-        #    }
-        #    chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data)
-        #else:
-        #    chatbot_data = Chatbot_data(chatbot=chatbot)
-        #    chatbot_data_form = ChatbotDataForm()
     else:
         chatbot_form = ChatbotForm()
 
     if request.method == 'POST':
             chatbot_form = ChatbotForm(request.POST)#, request.FILES)
+
+            for chatbot_data_form in chatbot_data_forms:
+                if chatbot_data_form.prefix in request.POST:
+                    # The form with a matching prefix is the submitted form
+                    submitted_form = chatbot_data_form
+                    break
+    
             chatbot_data_form = ChatbotDataForm(request.POST)
-            chatbot_data_id = request.POST.get('chatbot_data_id')
 
             chatbot.name = chatbot_form.data['name']
             chatbot.bio = chatbot_form.data['bio']
@@ -151,8 +144,8 @@ def chatbot_detail(request, chatbot_id):
             chatbot.is_enable = chatbot_form.data['chatbot_state']
             chatbot.save()
 
-            chatbot_data = chatbot.chatbot_data_set.filter(id=chatbot_data_id)
-            chatbot_data.data = chatbot_data_form.data['data']
+            chatbot_data = chatbot_data.objects.get(id=int(submitted_form.prefix))
+            chatbot_data.data = submitted_form.data['data']
             chatbot_data.embedding = create_embedding(chatbot_data.data)
             chatbot_data.save()
 
