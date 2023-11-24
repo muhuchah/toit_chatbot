@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from chatbot.models import User, Chatbot, Chat, Message, Chatbot_data, Comment
-from chatbot.forms import ChatbotForm, ChatbotDataForm
+from chatbot.forms import ChatbotForm
 from chatbot.services import openai_response, openai_generate_title, create_embedding
-from django.forms import modelformset_factory
+from pgvector.django import CosineDistance
 from django.core.paginator import Paginator
 
 
@@ -70,9 +70,12 @@ def chat_detail(request, chat_id):
 
     if request.method == 'POST':
         user_message = request.POST['usermessage']
+        user_message_embed = create_embedding(user_message)
 
-        chatbot_response = openai_response(user_message)
-        #chatbot_response = "THIS IS A TEST ANSWER!"
+        chatbot = chat.chatbot
+        nearest_data = chatbot.chatbot_data_set.order_by(CosineDistance('embedding', user_message_embed))[:1]
+
+        chatbot_response = openai_response(usermessage=user_message, data=nearest_data)
         
         message = Message(user_message=user_message, chatbot_response=chatbot_response, chat=chat)
         message.save()
@@ -82,7 +85,6 @@ def chat_detail(request, chat_id):
 
     if len(messages) == 1:  # new chat need a new title
         chat.title = openai_generate_title(user_message)
-        #chat.title = "TEST TITLE"
         chat.save()
 
 

@@ -10,14 +10,16 @@ from django.core.paginator import Paginator
 API_KEY = "dWJ6TR1Wdo39SYxHqgYh60i7fjKnaPlO"
 BASE_URL = "https://openai.torob.ir/v1"
 
-def openai_response(usermessage):
-    # Handle Prompt
+def openai_response(usermessage, data):
     client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
+
+    content = f"Based on the specific data: {data}, answer to the following question."
+    
 
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            #{"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
+            {"role": "system", "content": content},
             {"role": "user", "content": usermessage}
         ]
     )
