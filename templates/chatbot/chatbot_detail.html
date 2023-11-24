@@ -18,7 +18,7 @@
         <h2>Chatbot Data</h2>
         {% for chatbot_data_form in chatbot_data_forms %}
             {{ chatbot_data_form.as_table }}
-            <input type="submit" value="Submit">
+            <button type="submit" name="submitted_form_prefix" value="{{ chatbot_data_form.prefix }}">Save</button>
         {% endfor %}
 
         <button type="submit"><a href="{% url 'mychatbots_list' user_id=user_id%}">Cancel</a></button>

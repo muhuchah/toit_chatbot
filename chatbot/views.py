@@ -129,7 +129,8 @@ def chatbot_detail(request, chatbot_id):
 
     if request.method == 'POST':
             chatbot_form = ChatbotForm(request.POST)#, request.FILES)
-            submitted_form_prefix = request.POST['submitted_form_prefix']
+            submitted_form_prefix = request.POST.get('submitted_form_prefix')
+
 
 
             for chatbot_data_form in chatbot_data_forms:
