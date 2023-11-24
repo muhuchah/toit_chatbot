@@ -99,9 +99,15 @@ def chatbot_detail(request, chatbot_id):
     chatbot = Chatbot.objects.get(id=chatbot_id)
 
     # Create a formset using modelformset_factory
-    ChatbotDataFormSet = modelformset_factory(Chatbot_data, form=ChatbotDataForm, extra=1)
+    ChatbotDataFormSet = modelformset_factory(Chatbot_data, form=ChatbotDataForm, extra=1, fields=('data',))
 
-    chatbot_form = None
+    initial_chatbot_data = {
+        'name': chatbot.name,
+        'bio': chatbot.bio,
+        #'image': chatbot.image,
+        'chatbot_state': chatbot.is_enable
+    }
+    chatbot_form = ChatbotForm(initial=initial_chatbot_data)
 
     if request.method == 'POST':
         # Process the chatbot form
