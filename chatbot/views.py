@@ -5,7 +5,7 @@ from chatbot.forms import ChatbotForm
 from chatbot.services import openai_response, openai_generate_title, create_embedding
 from pgvector.django import CosineDistance
 from django.core.paginator import Paginator
-
+from django.contrib.postgres.search import SearchQuery, SearchVector, SearchRank
 
 
 def chatbots_list(request, user_id):
@@ -80,10 +80,18 @@ def chat_detail(request, chat_id):
         message = Message(user_message=user_message, chatbot_response=chatbot_response, chat=chat)
         message.save()
 
+    q = request.GET.get('q')
 
-    messages = chat.message_set.all()
+    if not q:
+        messages = chat.message_set.all()
+    else:
+        vector = SearchVector('user_message', 'chatbot_response')
+        query = SearchQuery(q)
 
-    if len(messages) == 1:  # new chat need a new title
+        messages = chat.message_set.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.001).order_by('-rank')
+
+
+    if len(messages) == 1 and not q:  # new chat need a new title
         chat.title = openai_generate_title(user_message)
         chat.save()
 

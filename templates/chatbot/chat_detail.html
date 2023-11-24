@@ -9,6 +9,11 @@
 <body>
     <h1>{{chat.title}}</h1>
 
+    <form>
+        <input type="text" name="q">
+        <button>Search</button>
+    </form>
+
     {% for message in messages %}
         <h5>User</h5>
         <p>{{message.user_message}}</p>
