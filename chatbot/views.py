@@ -95,82 +95,9 @@ def chat_detail(request, chat_id):
 
 
 def chatbot_detail(request, chatbot_id):
-    chatbot = get_object_or_404(Chatbot, id=chatbot_id)
-    form = ChatbotForm(request.POST or None, instance=chatbot)
-    ChatBotDataFormset = modelformset_factory(Chatbot_data, form=ChatbotDataForm, extra=1)
-    qs = chatbot.chatbotdata_set.all()
-    formset = ChatBotDataFormset(request.POST or None, queryset=qs)
-    context = {
-        "form": form,
-        "formset": formset,
-        "chatbot": chatbot
-    }
-
-    if all([form.is_valid(), formset.is_valid()]):
-        parent = form.save(commit=False)
-        parent.save()
-        for form in formset:
-            child = form.save(commit=False)
-            if child.chatbot is None:
-                child.chatbot = parent
-            child.save()
-    return render(request, "chatbot/chatbot_detail.html", context)
-
-"""
-def chatbot_detail(request, chatbot_id):
-    # Get the chatbot instance
-    chatbot = get_object_or_404(Chatbot, id=chatbot_id)
-
-    # Create a formset using modelformset_factory
-    ChatbotDataFormSet = modelformset_factory(Chatbot_data, form=ChatbotDataForm, extra=1, fields=('data',))
-
-    initial_chatbot_data = {
-        'name': chatbot.name,
-        'bio': chatbot.bio,
-        #'image': chatbot.image,
-        'chatbot_state': chatbot.is_enable
-    }
-    chatbot_form = ChatbotForm(initial=initial_chatbot_data, instance=chatbot)
-
-    if request.method == 'POST':
-        # Process the chatbot form
-        chatbot_form = ChatbotForm(request.POST, instance=chatbot)
-        chatbot_data_forms = ChatbotDataFormSet(request.POST, prefix='chatbot_data', queryset=Chatbot_data.objects.filter(chatbot=chatbot))
-
-        #if chatbot_form.is_valid():
-        #    chatbot_form.save()
-        #else:
-        #   # Render the chatbot form
-        #   chatbot_form = ChatbotForm(instance=chatbot)
-        if all([chatbot_form.is_valid(), chatbot_data_forms.is_valid()]):
-            parent = chatbot_form.save(commit=False)
-            parent.save()
-        
-            for form in chatbot_data_forms:
-                child = form.save(commit=False)
-                if child.Chatbot is None:
-                    child.Chatbot = parent
-                child.save()
-
-        return redirect('chatbot_detail', chatbot_id=chatbot_id)
-
-    # Get the chatbot data forms
-    chatbot_data_forms = ChatbotDataFormSet(queryset=Chatbot_data.objects.filter(chatbot=chatbot))
-    
-    context = {
-        'user_id': chatbot.owner.id,
-        'chatbot': chatbot,
-        'chatbot_form': chatbot_form,
-        'chatbot_data_forms': chatbot_data_forms,
-    }
-
-    return render(request, 'chatbot/chatbot_detail.html', context)
-"""
-"""
-def chatbot_detail(request, chatbot_id):
     chatbot = Chatbot.objects.get(id=chatbot_id)
-    ChatbotDataFormSet = formset_factory(ChatbotDataForm)
-    chatbot_data_forms = []
+    
+    chatbot_dataset = chatbot.chatbot_data_set.all()
 
     if chatbot:
         initial_chatbot_data = {
@@ -181,61 +108,25 @@ def chatbot_detail(request, chatbot_id):
         }
         chatbot_form = ChatbotForm(initial=initial_chatbot_data)
 
-        chatbot_dataset = chatbot.chatbot_data_set.all()
-        if chatbot_dataset:
-            for chatbot_data in chatbot_dataset:
-                initial_chatbot_data = {
-                    'data': chatbot_data.data,
-                }
-                chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data, prefix=str(chatbot_data.id))
-                chatbot_data_forms.append(chatbot_data_form)
-
-        else:
-            chatbot_data = Chatbot_data(chatbot=chatbot)
-            initial_chatbot_data = {
-                'data': "Your Data",
-            }
-            chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data, prefix=str(chatbot_data.id))
-
-            chatbot_data_forms.append(chatbot_data_form)
     else:
         chatbot_form = ChatbotForm()
-
-    if request.method == 'POST':
-            chatbot_form = ChatbotForm(request.POST)#, request.FILES)
-            submitted_form_prefix = request.POST.get('submitted_form_prefix')
-
-
-
-            for chatbot_data_form in chatbot_data_forms:
-                if chatbot_data_form.prefix in submitted_form_prefix:
-                    # The form with a matching prefix is the submitted form
-                    submitted_form = chatbot_data_form
-                    break
     
-            chatbot_data_form = ChatbotDataForm(request.POST)
+    if request.method == 'POST':
+        chatbot_form = ChatbotForm(request.POST)
 
-            chatbot.name = chatbot_form.data['name']
-            chatbot.bio = chatbot_form.data['bio']
-            #chatbot.image = chatbot_form.cleaned_data['image']
-            chatbot.is_enable = chatbot_form.data['chatbot_state']
-            chatbot.save()
-
-            chatbot_data = chatbot.chatbot_data_set.get(id=int(submitted_form.prefix))
-            chatbot_data.data = submitted_form.data['data']
-            #chatbot_data.embedding = create_embedding(chatbot_data.data)
-            chatbot_data.save()
-
-            return redirect('chatbot_detail', chatbot_id=chatbot_id)
+        chatbot.name = chatbot_form.data['name']
+        chatbot.bio = chatbot_form.data['bio']
+        #chatbot.image = chatbot_form.cleaned_data['image']
+        chatbot.is_enable = chatbot_form.data['chatbot_state']
+        chatbot.save()
 
     context = {
-        'user_id': chatbot.owner.id,
         'chatbot_form': chatbot_form,
-        'chatbot_data_forms': chatbot_data_forms,
+        'chatbot': chatbot,
+        'data_forms': chatbot_dataset
     }
 
     return render(request, 'chatbot/chatbot_detail.html', context)
-"""
 
 
 def create_newchat(request, user_id, chatbot_id):
@@ -255,6 +146,23 @@ def create_newchatbot(request, user_id):
     newchatbot.save()
 
     return redirect('chatbot_detail', chatbot_id=newchatbot.id)
+
+
+def create_new_data(request, chatbot_id):
+    chatbot = get_object_or_404(Chatbot, id=chatbot_id)
+    data = request.POST['chatbot_data']
+    embedding = create_embedding(data)
+    
+    new_data = Chatbot_data(data=data, embedding=embedding, chatbot=chatbot)
+    new_data.save()
+
+
+def edit_chatbot_data(request, chatbot_data_id):
+    chatbot_data = get_object_or_404(Chatbot_data, id=chatbot_data_id)
+
+    data = request.POST['chatbot_data'+chatbot_data_id]
+    chatbot_data.data = data
+    chatbot_data.save()
 
 
 def signout(request):

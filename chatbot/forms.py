@@ -5,9 +5,3 @@ class ChatbotForm(forms.ModelForm):
     class Meta:
         model = Chatbot
         fields = ['name', 'bio', 'is_enable']
-
-
-class ChatbotDataForm(forms.ModelForm):
-    class Meta:
-        model = Chatbot_data
-        fields = 'data'
