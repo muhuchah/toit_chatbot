@@ -97,9 +97,11 @@ def chat_detail(request, chat_id):
 def chatbot_detail(request, chatbot_id):
     # Get the chatbot instance
     chatbot = Chatbot.objects.get(id=chatbot_id)
-    
+
     # Create a formset using modelformset_factory
     ChatbotDataFormSet = modelformset_factory(Chatbot_data, form=ChatbotDataForm, extra=1)
+
+    chatbot_form = None
 
     if request.method == 'POST':
         # Process the chatbot form
