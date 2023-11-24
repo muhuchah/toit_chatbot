@@ -120,9 +120,12 @@ def chatbot_detail(request, chatbot_id):
         #   # Render the chatbot form
         #   chatbot_form = ChatbotForm(instance=chatbot)
         chatbot_form.save()
+        
+        #Chatbot_data.objects.filter(chatbot=chatbot).delete()
         for form in chatbot_data_forms:
+            form.instancd.chatbot = chatbot
             form.save()
-        chatbot_data_forms.save()
+        # chatbot_data_forms.save()
 
         return redirect('chatbot_detail', chatbot_id=chatbot_id)
 
