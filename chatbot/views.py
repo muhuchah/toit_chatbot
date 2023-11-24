@@ -95,8 +95,31 @@ def chat_detail(request, chat_id):
 
 
 def chatbot_detail(request, chatbot_id):
+    chatbot = get_object_or_404(Chatbot, id=chatbot_id)
+    form = ChatbotForm(request.POST or None, instance=chatbot)
+    ChatBotDataFormset = modelformset_factory(Chatbot_data, form=ChatbotDataForm, extra=1)
+    qs = chatbot.chatbotdata_set.all()
+    formset = ChatBotDataFormset(request.POST or None, queryset=qs)
+    context = {
+        "form": form,
+        "formset": formset,
+        "chatbot": chatbot
+    }
+
+    if all([form.is_valid(), formset.is_valid()]):
+        parent = form.save(commit=False)
+        parent.save()
+        for form in formset:
+            child = form.save(commit=False)
+            if child.chatbot is None:
+                child.chatbot = parent
+            child.save()
+    return render(request, "chatbot/chatbot_detail.html", context)
+
+"""
+def chatbot_detail(request, chatbot_id):
     # Get the chatbot instance
-    chatbot = Chatbot.objects.get(id=chatbot_id)
+    chatbot = get_object_or_404(Chatbot, id=chatbot_id)
 
     # Create a formset using modelformset_factory
     ChatbotDataFormSet = modelformset_factory(Chatbot_data, form=ChatbotDataForm, extra=1, fields=('data',))
@@ -142,7 +165,7 @@ def chatbot_detail(request, chatbot_id):
     }
 
     return render(request, 'chatbot/chatbot_detail.html', context)
-
+"""
 """
 def chatbot_detail(request, chatbot_id):
     chatbot = Chatbot.objects.get(id=chatbot_id)

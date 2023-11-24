@@ -10,4 +10,4 @@ class ChatbotForm(forms.ModelForm):
 class ChatbotDataForm(forms.ModelForm):
     class Meta:
         model = Chatbot_data
-        fields = '__all__'
+        fields = 'data'

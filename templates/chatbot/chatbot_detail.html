@@ -9,21 +9,21 @@
 <body>
     <h1>Chatbot Details</h1>
     
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" action=".">
         {% csrf_token %}
     
         <h2>Chatbot Information</h2>
         {{ chatbot_form.as_p }}
 
-        {{ chatbot.likes }}
-        {{ chatbot.dislikes }}
+        <p>Chatbot likes: {{ chatbot.likes }}</p>
+        <p>Chatbot dislikes: {{ chatbot.dislikes }}</p>
     
+        {% if formset %}
         <h2>Chatbot Data</h2>
-        {{ chatbot_data_forms.management_form }}
-        {% for chatbot_data_form in chatbot_data_forms %}
-            {{ chatbot_data_form.as_p }}
-        {% endfor %}
-        <input type="submit" value="Save">
+        {{ formset.as_p }}
+        {% endif %}
+        <button style="margin-top:10px;" type="submit">Save</button>
+
         <button type="submit"><a href="{% url 'mychatbots_list' user_id=user_id%}">Cancel</a></button>
     </form>
 </body>
