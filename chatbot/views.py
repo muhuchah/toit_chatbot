@@ -125,7 +125,7 @@ def chatbot_detail(request, chatbot_id):
         'chatbot_data_forms': chatbot_data_forms,
     }
 
-    return render(request, 'chatbot_detail.html', context)
+    return render(request, 'chatbot/chatbot_detail.html', context)
 
 """
 def chatbot_detail(request, chatbot_id):
