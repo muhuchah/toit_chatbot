@@ -3,8 +3,7 @@ from django.contrib import messages
 from chatbot.models import User, Chatbot, Chat, Message, Chatbot_data, Comment
 from chatbot.forms import ChatbotForm, ChatbotDataForm
 from chatbot.services import openai_response, openai_generate_title, create_embedding
-from openai import OpenAI
-import json
+from django.forms import modelformset_factory
 from django.core.paginator import Paginator
 
 
@@ -96,8 +95,42 @@ def chat_detail(request, chat_id):
 
 
 def chatbot_detail(request, chatbot_id):
+    # Get the chatbot instance
     chatbot = Chatbot.objects.get(id=chatbot_id)
+    
+    # Create a formset using modelformset_factory
+    ChatbotDataFormSet = modelformset_factory(Chatbot_data, form=ChatbotDataForm, extra=1)
+
+    if request.method == 'POST':
+        # Process the chatbot form
+        chatbot_form = ChatbotForm(request.POST, instance=chatbot)
+        chatbot_data_forms = ChatbotDataFormSet(request.POST, prefix='chatbot_data', queryset=Chatbot_data.objects.filter(chatbot=chatbot))
+
+        #if chatbot_form.is_valid():
+        #    chatbot_form.save()
+        #else:
+        #   # Render the chatbot form
+        #   chatbot_form = ChatbotForm(instance=chatbot)
+        chatbot_form.save()
+        chatbot_data_forms.save()
+
+    # Get the chatbot data forms
+    chatbot_data_forms = ChatbotDataFormSet(queryset=Chatbot_data.objects.filter(chatbot=chatbot))
+    
+    context = {
+        'chatbot': chatbot,
+        'chatbot_form': chatbot_form,
+        'chatbot_data_forms': chatbot_data_forms,
+    }
+
+    return render(request, 'chatbot_detail.html', context)
+
+"""
+def chatbot_detail(request, chatbot_id):
+    chatbot = Chatbot.objects.get(id=chatbot_id)
+    ChatbotDataFormSet = formset_factory(ChatbotDataForm)
     chatbot_data_forms = []
+
     if chatbot:
         initial_chatbot_data = {
             'name': chatbot.name,
@@ -114,8 +147,8 @@ def chatbot_detail(request, chatbot_id):
                     'data': chatbot_data.data,
                 }
                 chatbot_data_form = ChatbotDataForm(initial=initial_chatbot_data, prefix=str(chatbot_data.id))
-
                 chatbot_data_forms.append(chatbot_data_form)
+
         else:
             chatbot_data = Chatbot_data(chatbot=chatbot)
             initial_chatbot_data = {
@@ -161,6 +194,7 @@ def chatbot_detail(request, chatbot_id):
     }
 
     return render(request, 'chatbot/chatbot_detail.html', context)
+"""
 
 
 def create_newchat(request, user_id, chatbot_id):

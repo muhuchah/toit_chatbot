@@ -13,16 +13,15 @@
         {% csrf_token %}
     
         <h2>Chatbot Information</h2>
-        {{ chatbot_form.as_table }}
+        {{ chatbot_form.as_p }}
     
         <h2>Chatbot Data</h2>
+        {{ chatbot_data_forms.management_form }}
         {% for chatbot_data_form in chatbot_data_forms %}
-            {{ chatbot_data_form.as_table }}
-            <button type="submit" name="submitted_form_prefix" value="{{ chatbot_data_form.prefix }}">Save</button>
+            {{ chatbot_data_form.as_p }}
         {% endfor %}
-
+        <input type="submit" value="Save">
         <button type="submit"><a href="{% url 'mychatbots_list' user_id=user_id%}">Cancel</a></button>
-        
     </form>
 </body>
 </html>

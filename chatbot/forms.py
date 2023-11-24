@@ -1,11 +1,13 @@
 from django import forms
+from chatbot.models import Chatbot, Chatbot_data
 
-class ChatbotForm(forms.Form):
-    name = forms.CharField(max_length=32)
-    bio = forms.CharField(widget=forms.Textarea)
-    #image = forms.ImageField()
-    chatbot_state = forms.BooleanField(widget=forms.RadioSelect(choices=[(True, 'Enabled'), (False, 'Disabled')]))
+class ChatbotForm(forms.ModelForm):
+    class Meta:
+        model = Chatbot
+        fields = '__all__'
 
 
-class ChatbotDataForm(forms.Form):
-    data = forms.CharField(widget=forms.Textarea)
+class ChatbotDataForm(forms.ModelForm):
+    class Meta:
+        model = Chatbot_data
+        fields = '__all__'
