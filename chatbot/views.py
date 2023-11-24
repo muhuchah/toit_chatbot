@@ -107,7 +107,7 @@ def chatbot_detail(request, chatbot_id):
         #'image': chatbot.image,
         'chatbot_state': chatbot.is_enable
     }
-    chatbot_form = ChatbotForm(initial=initial_chatbot_data)
+    chatbot_form = ChatbotForm(initial=initial_chatbot_data, instance=chatbot)
 
     if request.method == 'POST':
         # Process the chatbot form
@@ -121,6 +121,8 @@ def chatbot_detail(request, chatbot_id):
         #   chatbot_form = ChatbotForm(instance=chatbot)
         chatbot_form.save()
         chatbot_data_forms.save()
+
+        return redirect('chatbot_detail', chatbot_id=chatbot_id)
 
     # Get the chatbot data forms
     chatbot_data_forms = ChatbotDataFormSet(queryset=Chatbot_data.objects.filter(chatbot=chatbot))

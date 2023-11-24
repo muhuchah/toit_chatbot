@@ -4,7 +4,7 @@ from chatbot.models import Chatbot, Chatbot_data
 class ChatbotForm(forms.ModelForm):
     class Meta:
         model = Chatbot
-        fields = '__all__'
+        fields = ['name', 'bio', 'is_enable']
 
 
 class ChatbotDataForm(forms.ModelForm):
