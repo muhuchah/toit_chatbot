@@ -1,10 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from chatbot.models import User, Chatbot, Chat, Message, Chatbot_data, Comment
-from chatbot.forms import ChatbotForm, ChatbotDataForm
 from openai import OpenAI
-from django.core.paginator import Paginator
-
 
 # Variables
 API_KEY = "dWJ6TR1Wdo39SYxHqgYh60i7fjKnaPlO"

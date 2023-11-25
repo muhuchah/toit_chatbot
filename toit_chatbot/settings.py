@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-537x*505@27$1t@&%(i26or(h7e79g%p0p2hpxfy^nbpox*2dt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'toitchatbot.darkube.app']
-
+#ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'toitchatbot.darkube.app']
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -38,17 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
-    'chatbot.apps.ChatbotConfig',
-    'accounts',
-    "debug_toolbar",
+    'accounts',    
+    'chatbot',
+    #"debug_toolbar",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+#    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -131,14 +131,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "home"
+#LOGIN_REDIRECT_URL = "home"
+#LOGOUT_REDIRECT_URL = "home"
 
-INTERNAL_IPS = [
-    # ...
-    "127.0.0.1",
-    # ...
-]
+#INTERNAL_IPS = [
+#    # ...
+#    "127.0.0.1",
+#    # ...
+#]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://toitchatbot.darkube.app'

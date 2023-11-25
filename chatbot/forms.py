@@ -1,5 +1,5 @@
 from django import forms
-from chatbot.models import Chatbot, Chatbot_data
+from chatbot.models import Chatbot
 
 class ChatbotForm(forms.ModelForm):
     class Meta:
