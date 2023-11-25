@@ -8,4 +8,4 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('chatbot/', include('chatbot.urls')),
     path("__debug__/", include("debug_toolbar.urls")),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]# + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -21,20 +21,20 @@
     <p>Chatbot likes: {{ chatbot.likes }}</p>
     <p>Chatbot dislikes: {{ chatbot.dislikes }}</p>
 
-    <form method="post">
+    {% if data_forms %}
+        <form method="post" action="{% url 'edit_chatbot_data' chatbot_id=chatbot.id %}">
         {% csrf_token %}
 
-        {% if data_forms %}
-            {% for form in data_forms %}
-                <div class="mb-4">
-                    <input type="text" id="chatbot_data_{{ form.id }}" name="chatbot_data_{{ form.id }}" class="w-full border rounded py-2 px-3" placeholder="Enter data" value="{{ form.data }}"    required>
-                </div>
-                <button type="submit"><a href="{% url 'edit_chatbot_data' chatbot_data_id=form.id%}">Save</a></button>
-            {% endfor %}
-        {% endif %}
+        {% for form in data_forms %}
+            <div class="mb-4">
+                <input type="text" id="chatbot_data_{{form.id}}" name="chatbot_data_{{form.id}}" class="w-full border rounded py-2 px-3" placeholder="Enter data" value="{{ form.data }}" required>
+            </div>
+            <input type="hidden" name="form_id" value="{{form.id}}">
+            <button type="submit">Save</button>
+        {% endfor %}
+        </form>
+    {% endif %}
 
-        <button type="submit"><a href="{% url 'mychatbots_list' user_id=chatbot.owner.id%}">Cancel</a></button>
-    </form>
 
     <form method="post" action="{% url 'create_new_data' chatbot_id=chatbot.id %}"">
         {% csrf_token %}
@@ -42,6 +42,8 @@
         <input type="text" name="chatbot_data" id="chatbot_data">
         <button type="submit">Save</button>
     </form>
+
+    <button type="submit"><a href="{% url 'mychatbots_list' user_id=chatbot.owner.id%}">Cancel</a></button>
 
 </body>
 </html>

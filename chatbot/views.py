@@ -80,6 +80,7 @@ def chat_detail(request, chat_id):
         message = Message(user_message=user_message, chatbot_response=chatbot_response, chat=chat)
         message.save()
 
+    # q is the search query
     q = request.GET.get('q')
 
     if not q:
@@ -91,7 +92,7 @@ def chat_detail(request, chat_id):
         messages = chat.message_set.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.001).order_by('-rank')
 
 
-    if len(messages) == 1 and not q:  # new chat need a new title
+    if len(messages) == 1 and not q:
         chat.title = openai_generate_title(user_message)
         chat.save()
 
@@ -159,7 +160,7 @@ def create_new_data(request, chatbot_id):
 
     if data:
         embedding = create_embedding(data)
-    
+
         new_data = Chatbot_data(data=data, embedding=embedding, chatbot=chatbot)
         new_data.save()
 
@@ -167,13 +168,18 @@ def create_new_data(request, chatbot_id):
     return redirect('chatbot_detail', chatbot_id=chatbot_id)
 
 
-def edit_chatbot_data(request, chatbot_data_id):
-    chatbot_data = get_object_or_404(Chatbot_data, id=chatbot_data_id)
-    chatbot = chatbot_data.chatbot
+def edit_chatbot_data(request, chatbot_id):
+    if request.method == 'POST':
+        chatbot_data_id = request.POST['form_id']
+        chatbot_data = get_object_or_404(Chatbot_data, id=chatbot_data_id)
+        chatbot = chatbot_data.chatbot
 
-    data = request.POST['chatbot_data'+chatbot_data_id]
-    chatbot_data.data = data
-    chatbot_data.save()
+        data = request.POST['chatbot_data_'+str(chatbot_data_id)]
+        chatbot_data.data = data
+        chatbot_data.embedding = create_embedding(data=data)
+        chatbot_data.save()
+    else:
+        print(request.GET)
 
     return redirect('chatbot_detail', chatbot_id=chatbot.id)
 
