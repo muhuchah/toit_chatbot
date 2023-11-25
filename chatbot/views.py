@@ -114,7 +114,7 @@ def chatbot_detail(request, chatbot_id):
             'name': chatbot.name,
             'bio': chatbot.bio,
             #'image': chatbot.image,
-            'chatbot_state': chatbot.is_enable
+            'is_enable': chatbot.is_enable
         }
         chatbot_form = ChatbotForm(initial=initial_chatbot_data)
 
@@ -122,13 +122,8 @@ def chatbot_detail(request, chatbot_id):
         chatbot_form = ChatbotForm()
     
     if request.method == 'POST':
-        chatbot_form = ChatbotForm(request.POST)
-
-        chatbot.name = chatbot_form.data['name']
-        chatbot.bio = chatbot_form.data['bio']
-        #chatbot.image = chatbot_form.cleaned_data['image']
-        chatbot.is_enable = chatbot_form.data['chatbot_state']
-        chatbot.save()
+        chatbot_form = ChatbotForm(request.POST, instance=chatbot)
+        chatbot_form.save()
 
     context = {
         'chatbot_form': chatbot_form,
@@ -161,18 +156,26 @@ def create_newchatbot(request, user_id):
 def create_new_data(request, chatbot_id):
     chatbot = get_object_or_404(Chatbot, id=chatbot_id)
     data = request.POST['chatbot_data']
-    embedding = create_embedding(data)
+
+    if data:
+        embedding = create_embedding(data)
     
-    new_data = Chatbot_data(data=data, embedding=embedding, chatbot=chatbot)
-    new_data.save()
+        new_data = Chatbot_data(data=data, embedding=embedding, chatbot=chatbot)
+        new_data.save()
+
+    
+    return redirect('chatbot_detail', chatbot_id=chatbot_id)
 
 
 def edit_chatbot_data(request, chatbot_data_id):
     chatbot_data = get_object_or_404(Chatbot_data, id=chatbot_data_id)
+    chatbot = chatbot_data.chatbot
 
     data = request.POST['chatbot_data'+chatbot_data_id]
     chatbot_data.data = data
     chatbot_data.save()
+
+    return redirect('chatbot_detail', chatbot_id=chatbot.id)
 
 
 def signout(request):
