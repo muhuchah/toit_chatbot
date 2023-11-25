@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-# Variables
+# Openai Variables
 API_KEY = "dWJ6TR1Wdo39SYxHqgYh60i7fjKnaPlO"
 BASE_URL = "https://openai.torob.ir/v1"
 

@@ -2,27 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbots List</title>
+    <!--<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet"> -->
 </head>
-<body>
-    <label for="NewChatbot" class="block text-gray-600">NewChatbot</label>
-    <button type="submit"><a href="{% url 'create_newchatbot' user_id=user_id %}">+</a></button>
-    <br/>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class = "container">
+    <div class = "flex justify-center">
+        <div class="d-block w-100">
+            <label for="NewChatbot" class="block text-gray-600">NewChatbot</label>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"><a href="{% url 'create_newchatbot' user_id=user_id %}">+</a></button>
+        </div>
 
-    {% for chatbot in chatbots %}
-        <li><a href="{% url 'chatbot_detail' chatbot_id=chatbot.id %}">{{ chatbot.name }}</a></li>
-    {% endfor %}
+        <div>
+            {% for chatbot in chatbots %}
+            <div class="d-block">
+                <li class="chat-item border d-block rounded p-2 mb-4 hover:bg-gray-100">
+                        <a href="{% url 'chatbot_detail' chatbot_id=chatbot.id %}" class="chat-link flex items-center">
+                            {{ chatbot.name }}
+                        </a>
+                </li>
+            </div>
+            {% endfor %}
+        </div>
 
-    {% if chatbots.has_previous %}
-        <a href="?page=1">&laquo First</a>
-        <a href="?page={{chatbots.previous_page_number}}">Previous</a>
-    {% endif %}
-
-    {% if chatbots.has_next %}
-        <a href="?page={{chatbots.next_page_number}}">Next</a>
-        <a href="?page={{chatbots.paginator.num_pages}}">&raquo Last</a>
-    {% endif %}
+        <div class="container mx-auto">
+            {% if chatbots.has_previous %}
+                <a href="?page=1" class="chat-link flex items-center">&laquo First</a>
+                <a href="?page={{chatbots.previous_page_number}} class="chat-link flex items-center"">Previous</a>
+            {% endif %}
+        </div>
+    
+        {% if chatbots.has_next %}
+            <a href="?page={{chatbots.next_page_number}} class="chat-link flex items-center"">Next</a>
+            <a href="?page={{chatbots.paginator.num_pages}} class="chat-link flex items-center"">&raquo Last</a>
+        {% endif %}
+    </div>
+    </div>
 </body>
 </html>

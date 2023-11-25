@@ -11,7 +11,7 @@ from django.contrib.postgres.search import SearchQuery, SearchVector, SearchRank
 def chatbots_list(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
-    NUMBER_OF_CHATBOTS_PER_PAGE = 1
+    NUMBER_OF_CHATBOTS_PER_PAGE = 10
     p = Paginator(Chatbot.objects.all(), NUMBER_OF_CHATBOTS_PER_PAGE)
     page = request.GET.get('page')
     chatbots = p.get_page(page)
@@ -27,7 +27,7 @@ def chatbots_list(request, user_id):
 def mychatbots_list(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
-    NUMBER_OF_CHATBOTS_PER_PAGE = 1
+    NUMBER_OF_CHATBOTS_PER_PAGE = 10
     p = Paginator(user.chatbot_set.all(), NUMBER_OF_CHATBOTS_PER_PAGE)
     page = request.GET.get('page')
     chatbots = p.get_page(page)
@@ -47,7 +47,7 @@ def chat_history(request, user_id, chatbot_id):
     if not chatbot.is_enable:
         return redirect('chatbots_list', user_id)
     
-    NUMBER_OF_CHATS_PER_PAGE = 1
+    NUMBER_OF_CHATS_PER_PAGE = 10
     p = Paginator(Chat.objects.filter(user=user, chatbot=chatbot).values_list('title', 'id'), NUMBER_OF_CHATS_PER_PAGE)
     page = request.GET.get('page')
     chats_info = p.get_page(page)

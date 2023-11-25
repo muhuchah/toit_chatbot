@@ -7,13 +7,19 @@
     <title>Chatbots List</title>
 </head>
 <body>
-    {% for chatbot in chatbots %}
-        {% if chatbot.is_enable %}
-            <li><a href="{% url 'chat_history' user_id=user.id chatbot_id=chatbot.id %}">{{ chatbot.name }}</a></li>
-        {% else %}
-            <li>{{ chatbot.name }} - !!Chatbot Is Not Enable!!</li>
-        {% endif %}
-    {% endfor %}
+    <div class="container mx-auto p-4 mt-4">
+        {% for chatbot in chatbots %}
+            {% if chatbot.is_enable %}
+                <div class="container mx-auto p-4 mt-4">
+                    <li>
+                        <a href="{% url 'chat_history' user_id=user.id chatbot_id=chatbot.id %}">{{ chatbot.name }}</a>
+                    </li>
+                </div>
+            {% else %}
+                <li>{{ chatbot.name }} - !!Chatbot Is Not Enable!!</li>
+            {% endif %}
+        {% endfor %}
+    </div>
 
     {% if chatbots.has_previous %}
         <a href="?page=1">&laquo First</a>
