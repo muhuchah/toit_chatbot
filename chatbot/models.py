@@ -29,20 +29,22 @@ class Chat(models.Model):
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=16)
-    search_vector = SearchVectorField()
+    vector = SearchVectorField(default=None)
+
 
 class Message(models.Model):
     user_message = models.CharField(max_length=128)
     chatbot_response = models.CharField(max_length=128)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+    search_vector = SearchVectorField(default=None)
 
-#    def save(self, *args, **kwargs):
-#        super().save(*args, **kwargs)
-#        Message.objects.filter(pk=self.pk).update(search_vector=SearchVector('user_message', 'chatbot_response'))
-#
-#    @receiver(post_save, sender=Message)
-#    def update_search_vector(sender, instance, **kwargs):
-#        instance.save()
+    def save(self, *args, **kwargs):
+        self.chat.search_vector = (
+            SearchVector('user_message', weight='A')
+            + SearchVector('chatbot_response', weight='B')
+        )
+        super().save(*args, **kwargs)
+
 
 class Comment(models.Model):
     like = models.BooleanField(default=False)

@@ -1,5 +1,6 @@
 from openai import OpenAI
 import jsonlines
+import time
 
 # Openai Variables
 API_KEY = "dWJ6TR1Wdo39SYxHqgYh60i7fjKnaPlO"
@@ -40,11 +41,21 @@ def openai_generate_title(user_message):
 def create_embedding(data):
     client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
 
-    response = client.embeddings.create(
-        input = data,
-        model = 'text-embedding-ada-002',
-        encoding_format = 'float'
-    )
+    i = 0
+    ex = True
+    while ex:
+        ex = False 
+        try:
+            response = client.embeddings.create(
+                input = data,
+                model = 'text-embedding-ada-002',
+                encoding_format = 'float'
+            )
+        except:
+            print(i)
+            i += 1
+            time.sleep(5)
+            ex = True
 
     return response.data[0].embedding
 

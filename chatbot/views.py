@@ -79,6 +79,7 @@ def chat_detail(request, chat_id):
         
         message = Message(user_message=user_message, chatbot_response=chatbot_response, chat=chat)
         message.save()
+        chat.save()
 
     # q is the search query
     q = request.GET.get('q')
@@ -89,8 +90,10 @@ def chat_detail(request, chat_id):
         vector = SearchVector('user_message', 'chatbot_response')
         query = SearchQuery(q)
 
-        messages = chat.message_set.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.001).order_by('-rank')
-
+        #messages = chat.message_set.annotate(rank=SearchRank(message.search_vector, query)).filter(rank__gte=0.001).order_by('-rank')
+        messages = chat.message_set.annotate(rank=SearchRank(chat.vector, query)).filter(rank__gte=0.001).order_by('-rank')
+        #messages = chat.message_set.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.001).order_by('-rank')
+        print("390")
 
     if len(messages) == 1 and not q:
         chat.title = openai_generate_title(user_message)
