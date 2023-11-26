@@ -118,7 +118,8 @@ def chatbot_detail(request, chatbot_id):
             'name': chatbot.name,
             'bio': chatbot.bio,
             #'image': chatbot.image,
-            'is_enable': chatbot.is_enable
+            'is_enable': chatbot.is_enable,
+            'system_prompt': chatbot.system_prompt
         }
         chatbot_form = ChatbotForm(initial=initial_chatbot_data)
 

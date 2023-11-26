@@ -20,6 +20,7 @@
 
     <p>Chatbot likes: {{ chatbot.likes }}</p>
     <p>Chatbot dislikes: {{ chatbot.dislikes }}</p>
+    
 
     {% if data_forms %}
         <form method="post" action="{% url 'edit_chatbot_data' chatbot_id=chatbot.id %}">

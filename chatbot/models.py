@@ -19,6 +19,7 @@ class Chatbot(models.Model):
     is_enable = models.BooleanField(default=True)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
+    system_prompt = models.CharField(default="Based on the specific data: {data}, answer to the following question.")
 
 class Chatbot_data(models.Model):
     data = models.CharField(max_length=800)
