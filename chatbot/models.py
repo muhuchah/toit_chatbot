@@ -1,6 +1,9 @@
 from django.db import models
 from pgvector.django import VectorField
 from django.core.exceptions import ValidationError
+from django.contrib.postgres.search import SearchVectorField, SearchVector
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class User(models.Model):
     username = models.CharField(max_length=30)
@@ -26,11 +29,20 @@ class Chat(models.Model):
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=16)
+    search_vector = SearchVectorField()
 
 class Message(models.Model):
     user_message = models.CharField(max_length=128)
     chatbot_response = models.CharField(max_length=128)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+
+#    def save(self, *args, **kwargs):
+#        super().save(*args, **kwargs)
+#        Message.objects.filter(pk=self.pk).update(search_vector=SearchVector('user_message', 'chatbot_response'))
+#
+#    @receiver(post_save, sender=Message)
+#    def update_search_vector(sender, instance, **kwargs):
+#        instance.save()
 
 class Comment(models.Model):
     like = models.BooleanField(default=False)
