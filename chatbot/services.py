@@ -1,4 +1,5 @@
 from openai import OpenAI
+import jsonlines
 
 # Openai Variables
 API_KEY = "dWJ6TR1Wdo39SYxHqgYh60i7fjKnaPlO"
@@ -46,3 +47,11 @@ def create_embedding(data):
     )
 
     return response.data[0].embedding
+
+
+def read_jsonl_file(file_path):
+    data = []
+    with jsonlines.open(file_path) as reader:
+        for line in reader.iter():
+            data.append(line)
+    return data
