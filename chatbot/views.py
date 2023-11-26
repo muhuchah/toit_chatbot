@@ -6,6 +6,7 @@ from chatbot.services import openai_response, openai_generate_title, create_embe
 from pgvector.django import CosineDistance
 from django.core.paginator import Paginator
 from django.contrib.postgres.search import SearchQuery, SearchVector, SearchRank
+from django.db.models import F
 
 
 def chatbots_list(request, user_id):
@@ -75,11 +76,15 @@ def chat_detail(request, chat_id):
         chatbot = chat.chatbot
         nearest_data = chatbot.chatbot_data_set.order_by(CosineDistance('embedding', user_message_embed))[:1]
 
-        chatbot_response = openai_response(usermessage=user_message, data=nearest_data)
+        chatbot_response = openai_response(usermessage=user_message, data=nearest_data, sys_prompt=chatbot.system_prompt)
         
         message = Message(user_message=user_message, chatbot_response=chatbot_response, chat=chat)
         message.save()
-        chat.save()
+        message.search_vector = (
+            SearchVector('user_message', weight='A')
+            + SearchVector('chatbot_response', weight='B')
+        )
+        message.save()
 
     # q is the search query
     q = request.GET.get('q')
@@ -87,13 +92,10 @@ def chat_detail(request, chat_id):
     if not q:
         messages = chat.message_set.all()
     else:
-        vector = SearchVector('user_message', 'chatbot_response')
         query = SearchQuery(q)
 
-        #messages = chat.message_set.annotate(rank=SearchRank(message.search_vector, query)).filter(rank__gte=0.001).order_by('-rank')
-        messages = chat.message_set.annotate(rank=SearchRank(chat.vector, query)).filter(rank__gte=0.001).order_by('-rank')
-        #messages = chat.message_set.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.001).order_by('-rank')
-        print("390")
+        messages = chat.message_set.annotate(rank=SearchRank(F('search_vector'), query)).filter(rank__gte=0.001).order_by('-rank')
+
 
     if len(messages) == 1 and not q:
         chat.title = openai_generate_title(user_message)
@@ -233,7 +235,11 @@ def like_dislike(request, is_like, chat_id, message_id):
 
     if is_like != 1:
         # generate another response to the message
-        response = openai_response(message.user_message)
+        user_message_embed = create_embedding(message.user_message)
+
+        nearest_data = chatbot.chatbot_data_set.order_by(CosineDistance('embedding', user_message_embed))[:1]
+
+        response = openai_response(message.user_message, data=nearest_data, sys_prompt=chatbot.system_prompt)
         #response = "THIS IS A TEST ANSWER TO YOUR DISLIKE TO THIS IS A TEST ANSWER"
 
         new_message = Message(user_message=message.user_message, chatbot_response=response, chat=chat)
