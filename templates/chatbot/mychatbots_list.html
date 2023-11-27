@@ -3,41 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbots List</title>
-    <!--<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet"> -->
+    <title>MyChatbots List</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class = "container">
-    <div class = "flex justify-center">
-        <div class="d-block w-100">
-            <label for="NewChatbot" class="block text-gray-600">NewChatbot</label>
-            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"><a href="{% url 'create_newchatbot' user_id=user_id %}">+</a></button>
-        </div>
-
-        <div>
-            {% for chatbot in chatbots %}
-            <div class="d-block">
-                <li class="chat-item border d-block rounded p-2 mb-4 hover:bg-gray-100">
-                        <a href="{% url 'chatbot_detail' chatbot_id=chatbot.id %}" class="chat-link flex items-center">
-                            {{ chatbot.name }}
-                        </a>
-                </li>
-            </div>
-            {% endfor %}
-        </div>
-
+<body class="bg-gray-100">
+    <header class="bg-gray-800 text-white p-4">
         <div class="container mx-auto">
-            {% if chatbots.has_previous %}
-                <a href="?page=1" class="chat-link flex items-center">&laquo First</a>
-                <a href="?page={{chatbots.previous_page_number}} class="chat-link flex items-center"">Previous</a>
-            {% endif %}
+            <h1 class="text-2xl font-semibold">MyChatbots List</h1>
         </div>
-    
-        {% if chatbots.has_next %}
-            <a href="?page={{chatbots.next_page_number}} class="chat-link flex items-center"">Next</a>
-            <a href="?page={{chatbots.paginator.num_pages}} class="chat-link flex items-center"">&raquo Last</a>
+    </header>
+    <!-- Chat List -->
+    <div class="container mx-auto p-4 mt-4">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold">New Chatbot</h2>
+            <div>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
+                    <a href="{% url 'create_newchatbot' user_id=user_id %}">Add New Chat</a>
+                </button>
+            </div>
+        </div>
+        <!-- List of Previous Chats -->
+        <ul class="chat-list">
+            {% for chatbot in chatbots %}
+                <li class="chat-item border rounded p-2 mb-4 hover:bg-gray-100">
+                    <a href="{% url 'chatbot_detail' chatbot_id=chatbot.id %}" class="chat-link flex items-center">
+                        <div class="chat-avatar" style="width:60px;height:60px;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="User 1">
+                        </div>
+                        <div class="chat-details">
+                            <h3 class="chat-title">{{chatbot.name}}</h3>
+                        </div>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+        <!-- Pagination -->
+        {% if chatbots.has_previous %}
+            <div class="pagination flex space-x-2">
+                <ul>
+                    <li><a href="?page=1">&laquo First</a></li>
+                    <li><a href="?page={{chatbots.previous_page_number}}">Previous</a></li>
+                </ul>
+            </div>
         {% endif %}
-    </div>
+
+        {% if chatbots.has_previous %}
+        <div class="pagination flex space-x-2">
+            <ul>
+                <a href="?page={{chatbots.next_page_number}}">Next</a>
+                <a href="?page={{chatbots.paginator.num_pages}}">&raquo Last</a>
+            </ul>
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>
