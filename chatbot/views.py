@@ -86,16 +86,18 @@ def chat_detail(request, chat_id):
         )
         message.save()
 
-        # Generate Title
-        if len(messages) == 1:
-            chat.title = openai_generate_title(user_message)
-            chat.save()
+
 
     # q is the search query
     q = request.GET.get('q')
 
     if not q:
         messages = chat.message_set.all()
+
+        # Generate Title
+        if len(messages) == 1 and chat.title == "NewChat":
+            chat.title = openai_generate_title(user_message)
+            chat.save()
     else:
         query = SearchQuery(q)
 
@@ -242,6 +244,11 @@ def like_dislike(request, is_like, chat_id, message_id):
         #response = "THIS IS A TEST ANSWER TO YOUR DISLIKE TO THIS IS A TEST ANSWER"
 
         new_message = Message(user_message=message.user_message, chatbot_response=response, chat=chat)
+        new_message.save()
+        new_message.search_vector = (
+            SearchVector('user_message', weight='A')
+            + SearchVector('chatbot_response', weight='B')
+        )
         new_message.save()
 
     return redirect('chat_detail', chat_id=chat.id)
