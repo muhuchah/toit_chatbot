@@ -86,6 +86,11 @@ def chat_detail(request, chat_id):
         )
         message.save()
 
+        # Generate Title
+        if len(messages) == 1:
+            chat.title = openai_generate_title(user_message)
+            chat.save()
+
     # q is the search query
     q = request.GET.get('q')
 
@@ -95,12 +100,6 @@ def chat_detail(request, chat_id):
         query = SearchQuery(q)
 
         messages = chat.message_set.annotate(rank=SearchRank(F('search_vector'), query)).filter(rank__gte=0.001).order_by('-rank')
-
-
-    if len(messages) == 1 and not q:
-        chat.title = openai_generate_title(user_message)
-        chat.save()
-
 
     context = {
         'chat': chat,
