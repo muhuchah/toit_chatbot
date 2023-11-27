@@ -14,27 +14,43 @@
     </header>
     
     <div class="container mx-auto p-4 mt-4">
-        <div>
+        <div class="w-full border rounded py-2 px-3">
             <form method="post">
                 {% csrf_token %}
 
-                <div>
+                <div class="form-header">
                     <h2>Chatbot Information</h2>
                 </div>
-                <div>
-                    {{ chatbot_form.as_table }}
+                <label class="block text-gray-600">Name</label>
+                <div class="w-full border rounded py-2 px-3">
+                    {{ chatbot_form.name }}
                 </div>
-                <div>
-                    <button type="submit">Save</a></button>
+                <label class="block text-gray-600">Bio</label>
+                <div class="w-full border rounded py-2 px-3">
+                    {{ chatbot_form.bio }}
                 </div>
+                <label class="block text-gray-600">System Prompt</label>
+                <div class="w-full border rounded py-2 px-3">
+                    {{ chatbot_form.system_prompt }}
+                </div>
+                <label class="block text-gray-600">Is Enable</label>
+                <div class="w-full border rounded py-2 px-3">
+                    {{ chatbot_form.is_enable }}
+                </div>
+                <div class="w-full border rounded py-2 px-3">
+                    <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Save Information</a></button>
+                </div>
+
             </form>
-            <div>
+            <div class="w-full border rounded py-2 px-3">
+                <label class="block text-gray-600">Likes & Dislikes</label>
                 <p>👍: {{ chatbot.likes }}</p>
                 <p>👎: {{ chatbot.dislikes }}</p>  
             </div>
         </div>
         {% if data_forms %}
-            <div>
+            <div class="w-full border rounded py-2 px-3">
+                <label class="block text-gray-600">Chatbot Data</label>
                 <form method="post" action="{% url 'edit_chatbot_data' chatbot_id=chatbot.id %}">
                     {% csrf_token %}
             
@@ -43,21 +59,22 @@
                             <input type="text" id="chatbot_data_{{form.id}}" name="chatbot_data_{{form.id}}" class="w-full border rounded py-2 px-3" placeholder="Enter data" value="{{ form.data }}" required>
                         </div>
                         <input type="hidden" name="form_id" value="{{form.id}}">
-                        <button type="submit">Save</button>
+                        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Save Data</button>
                     {% endfor %}
                     </form>
             </div>
         {% endif %}
-        <div>
+        <div class="w-full border rounded py-2 px-3">
+            <label class="block text-gray-600">Add New Data</label>
             <form method="post" action="{% url 'create_new_data' chatbot_id=chatbot.id %}"">
                 {% csrf_token %}
                 
-                <input type="text" name="chatbot_data" id="chatbot_data">
-                <button type="submit">Save</button>
+                <input type="text" name="chatbot_data" id="chatbot_data" class="w-full border rounded py-2 px-3">
+                <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Add New Data</button>
             </form>
         </div>
         <div>
-            <button type="submit"><a href="{% url 'mychatbots_list' user_id=chatbot.owner.id%}">Back</a></button>
+            <button type="submit" class="bg-red-500 text-white py-1 rounded hover:bg-blue-500"><a href="{% url 'mychatbots_list' user_id=chatbot.owner.id%}">Back</a></button>
         </div>
     </div>
 </body>
