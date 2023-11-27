@@ -2,16 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h3>Welcome to ToitChatBot!</h3>
-
-    <button type="submit"><a href="/signup">SignUp</a></button>
-    <br/>
-    <br/>
-    <button type="submit"><a href="/signin">SignIn</a></button>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-6 rounded shadow-md w-96">
+        <h1 class="text-2xl font-semibold mb-4">Welcome To ToitChatBot!</h1> 
+        <div>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+                <a href="/signup">SignUp</a>
+            </button>
+        </div>
+        <br/>
+        <div>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+                <a href="/signin">SignIn</a>
+            </button>
+        </div>
+    </div>
 </body>
 </html>
