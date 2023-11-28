@@ -16,13 +16,20 @@ def openai_response(usermessage, sys_prompt, data):
 
     usermessage += "\nSTRICTLY Do not give me any information about anything that is not mentioned in the PROVIDED CONTEXT."
 
-    completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": content},
-            {"role": "user", "content": usermessage}
-        ]
-    )
+    ex = True
+    while ex:
+        ex = False 
+        try:
+            completion = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": content},
+                    {"role": "user", "content": usermessage}
+                ]
+            )
+        except:
+            time.sleep(1)
+            ex = True
 
     return completion.choices[0].message.content
 
@@ -31,20 +38,26 @@ def openai_generate_title(user_message):
     # Handle Prompt
     client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
 
-    completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a chatbot, skilled in answering user's questions, generate a good and small (under 16 characters) title for the user message"},
-            {"role": "user", "content": user_message}
-        ]
-    )
+    ex = True
+    while ex:
+        ex = False 
+        try:
+            completion = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a chatbot, skilled in answering user's questions, generate a good and small (under 16 characters) title for the user message"},
+                    {"role": "user", "content": user_message}
+                ]
+            )
+        except:
+            time.sleep(1)
+            ex = True
    
     return completion.choices[0].message.content
 
 
 def create_embedding(data):
     client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
-    print(data)
 
     i = 0
     ex = True
