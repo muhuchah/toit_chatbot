@@ -200,7 +200,7 @@ def like_dislike(request, is_like, chat_id, message_id):
     chat = get_object_or_404(Chat, id=chat_id)
     message = get_object_or_404(Message, id=message_id)
 
-    chatbot = get_object_or_404(Chatbot, id=chat.chatbot.id)
+    chatbot = chat.chatbot
     comment = message.comment_set.first()
     if comment:
         if is_like == 1:
