@@ -9,12 +9,12 @@ BASE_URL = "https://openai.torob.ir/v1"
 def openai_response(usermessage, sys_prompt, data):
     client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
 
-    print(data, sys_prompt, usermessage)
     if "{data}" in sys_prompt:
         content = sys_prompt.format(data=data)
     else:
         content = sys_prompt
 
+    usermessage += "\nSTRICTLY Do not give me any information about anything that is not mentioned in the PROVIDED CONTEXT."
 
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
