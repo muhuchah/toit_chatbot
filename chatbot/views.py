@@ -76,8 +76,8 @@ def chat_detail(request, chat_id):
         chatbot = chat.chatbot
         nearest_data = chatbot.chatbot_data_set.order_by(CosineDistance('embedding', user_message_embed))[:1]
 
-        chatbot_response = openai_response(usermessage=user_message, data=nearest_data, sys_prompt=chatbot.system_prompt)
-        
+        chatbot_response = openai_response(usermessage=user_message, data=nearest_data[0].data, sys_prompt=chatbot.system_prompt)
+
         message = Message(user_message=user_message, chatbot_response=chatbot_response, chat=chat)
         message.save()
         message.search_vector = (
@@ -239,7 +239,7 @@ def like_dislike(request, is_like, chat_id, message_id):
 
         nearest_data = chatbot.chatbot_data_set.order_by(CosineDistance('embedding', user_message_embed))[:1]
 
-        response = openai_response(message.user_message, data=nearest_data, sys_prompt=chatbot.system_prompt)
+        response = openai_response(message.user_message, data=nearest_data[0].data, sys_prompt=chatbot.system_prompt)
         #response = "THIS IS A TEST ANSWER TO YOUR DISLIKE TO THIS IS A TEST ANSWER"
 
         new_message = Message(user_message=message.user_message, chatbot_response=response, chat=chat)
