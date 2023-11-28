@@ -17,9 +17,11 @@ def signup(request):
         
         if len(username)>30:
             messages.error(request, "Username must be under 30 charcters!!")
+            return redirect('home')
         
         if pass1 != pass2:
             messages.error(request, "Passwords didn't matched!!")
+            return redirect('home')
 
         myuser = User(username=username, password=pass1)
         myuser.save()
