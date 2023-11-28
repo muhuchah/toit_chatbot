@@ -197,8 +197,11 @@ def signout(request):
 
 
 def like_dislike(request, is_like, chat_id, message_id):
-    chat = get_object_or_404(Chat, id=chat_id)
-    message = get_object_or_404(Message, id=message_id)
+    chat = get_object_or_404(Chat.objects.prefetch_related('message_set'), id=chat_id)
+    message = chat.message_set.get(id=message_id)
+
+    #chat = get_object_or_404(Chat, id=chat_id)
+    #message = get_object_or_404(Message, id=message_id)
 
     chatbot = chat.chatbot
     comment = message.comment_set.first()
