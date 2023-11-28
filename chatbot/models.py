@@ -30,9 +30,10 @@ class Chat(models.Model):
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=16)
+    chat_history = models.CharField(max_length=2048)
 
 class Message(models.Model):
-    user_message = models.CharField(max_length=4096)
+    user_message = models.CharField(max_length=1024)
     chatbot_response = models.CharField(max_length=4096)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
     search_vector = SearchVectorField(default=None, null=True)
