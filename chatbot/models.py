@@ -29,8 +29,8 @@ class Chatbot_data(models.Model):
 class Chat(models.Model):
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=16)
-    chat_history = models.CharField(max_length=2048)
+    title = models.CharField(max_length=128)
+    chat_history = models.CharField(max_length=2048, default='')
 
 class Message(models.Model):
     user_message = models.CharField(max_length=1024)

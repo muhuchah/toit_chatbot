@@ -76,7 +76,16 @@ def chat_detail(request, chat_id):
         chatbot = chat.chatbot
         nearest_data = chatbot.chatbot_data_set.order_by(CosineDistance('embedding', user_message_embed))[:1]
 
-        chatbot_response = openai_response(usermessage=user_message, data=nearest_data[0].data, sys_prompt=chatbot.system_prompt)
+        chatbot_response = openai_response(usermessage=chat.chat_history+'\n'+user_message, data=nearest_data[0].data, sys_prompt=chatbot.system_prompt)
+
+        abs_message = openai_response(usermessage="give me a sentence to show just important parts of this sentence that are related to context. remember to make it short as possible. sentence:"+user_message+chatbot_response,data=nearest_data[0].data, sys_prompt=chatbot.system_prompt)
+        abs_message += chat.chat_history
+        print(abs_message)
+
+        if len(abs_message) > 2000:
+            chat.chat_history = abs_message[:2000]
+        else:
+            chat.chat_history = abs_message
 
         message = Message(user_message=user_message, chatbot_response=chatbot_response, chat=chat)
         message.save()
