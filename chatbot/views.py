@@ -112,8 +112,7 @@ def chat_detail(request, chat_id):
 
 
 def chatbot_detail(request, chatbot_id):
-    chatbot = Chatbot.objects.get(id=chatbot_id)
-    
+    chatbot = get_object_or_404(Chatbot.objects.prefetch_related('chatbot_data_set'), id=chatbot_id)
     chatbot_dataset = chatbot.chatbot_data_set.all()
 
     if chatbot:
@@ -197,14 +196,11 @@ def signout(request):
 
 
 def like_dislike(request, is_like, chat_id, message_id):
-    chat = get_object_or_404(Chat.objects.prefetch_related('message_set'), id=chat_id)
+    chat = get_object_or_404(Chat.objects.prefetch_related('message_set__comment_set'), id=chat_id)
     message = chat.message_set.get(id=message_id)
-
-    #chat = get_object_or_404(Chat, id=chat_id)
-    #message = get_object_or_404(Message, id=message_id)
-
-    chatbot = chat.chatbot
     comment = message.comment_set.first()
+    chatbot = chat.chatbot
+
     if comment:
         if is_like == 1:
             if comment.dislike:
