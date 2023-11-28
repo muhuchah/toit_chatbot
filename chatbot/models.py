@@ -32,8 +32,8 @@ class Chat(models.Model):
     title = models.CharField(max_length=16)
 
 class Message(models.Model):
-    user_message = models.CharField(max_length=128)
-    chatbot_response = models.CharField(max_length=128)
+    user_message = models.CharField(max_length=4096)
+    chatbot_response = models.CharField(max_length=4096)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
     search_vector = SearchVectorField(default=None, null=True)
 
