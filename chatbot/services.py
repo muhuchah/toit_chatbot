@@ -1,10 +1,11 @@
 from openai import OpenAI
 import jsonlines
 import time
+import os
 
 # Openai Variables
-API_KEY = "dWJ6TR1Wdo39SYxHqgYh60i7fjKnaPlO"
-BASE_URL = "https://openai.torob.ir/v1"
+API_KEY = os.environ["API_KEY"]
+BASE_URL = os.environ["BASE_URL"]
 
 def openai_response(usermessage, sys_prompt, data):
     client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
